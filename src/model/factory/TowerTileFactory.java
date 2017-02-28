@@ -16,10 +16,13 @@ import model.actions.MakeVisibleAction;
 import model.actions.SpawnTowerAction;
 import model.entities.PathTile;
 import model.entities.TowerTile;
+import model.events.ButtonClickLeftEvent;
+import model.events.ButtonClickRightEvent;
+
 import model.events.MapClickEvent;
 import model.events.MouseOverTowerTileEvent;
 
-public class TowerTileFactory implements IEntityFactory{
+public class TowerTileFactory implements IEntityFactory {
 
 	private final int[][] mapArray;
 	private List<TowerTile> tileList;
@@ -31,84 +34,104 @@ public class TowerTileFactory implements IEntityFactory{
 		this.tileList = new ArrayList<TowerTile>();
 		getTowerTileList();
 		this.nextTile = 0;
-		//printMapArray();
+		// printMapArray();
 	}
+
 	public boolean hasEntitiesLeft() {
 		return (nextTile < tileList.size());
 	}
-	
-	public void getTowerTileList(){
+
+	public void getTowerTileList() {
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
-				if(mapArray[column][row] == 2){
+				if (mapArray[column][row] == 2) {
 					TowerTile towerdot = new TowerTile("towertile");
-					towerdot.setPosition(row*100,column*100);
+					towerdot.setPosition(row * 100, column * 100);
 					tileList.add(towerdot);
 				}
 			}
 		}
 	}
-	
-	public int[][] getMapArray(){
+
+	public int[][] getMapArray() {
 		return mapArray;
 	}
-	
+
 	@Override
 	public Entity createEntity() {
 		TowerTile towerdot = tileList.get(nextTile++);
-		try{
+		try {
 			towerdot.addComponent(new ImageRenderComponent(new Image("assets/towerdot.png")));
-		}catch (SlickException e) {
+		} catch (SlickException e) {
 			System.out.println("/assets/towerdot.png not found in PathTileFactory.java");
 		}
 
 		MouseOverTowerTileEvent overTile = new MouseOverTowerTileEvent("mouseovertile");
 		overTile.addAction(new MakeVisibleAction());
 		towerdot.addComponent(overTile);
-		
+
 		NOTEvent notOverTile = new NOTEvent(new MouseOverTowerTileEvent("mouseNotOvertile"));
 		notOverTile.addAction(new MakeUnvisibleAction());
 		towerdot.addComponent(notOverTile);
-
-		MapClickEvent mapClick = new MapClickEvent();
-		mapClick.addAction(new SpawnTowerAction("bulletTower"));
-		towerdot.addComponent(mapClick);		
+		
+		// if ButtonCLickLeftEvent is true, build a bulletTower
+		ButtonClickLeftEvent buttonclickleft = new ButtonClickLeftEvent();
+		buttonclickleft.addAction(new SpawnTowerAction("bulletTower"));
+		
+		// if ButtonClickRightEvent is true, build a iceTower
+		ButtonClickRightEvent buttonclickright = new ButtonClickRightEvent();
+		buttonclickright.addAction(new SpawnTowerAction("iceTower"));
+		
+		towerdot.addComponent(buttonclickright);
+		towerdot.addComponent(buttonclickleft);
 
 		return towerdot;
 	}
 
 	// fill Path array with valid Tower positions
-	public void fillMapArray(){
+	public void fillMapArray() {
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
-				if(row < 6){
-					if(mapArray[column][row+1] == 1 && mapArray[column][row] == 1){	// →→
-						if(column > 0 && row < 7) mapArray[column-1][row+1] = 2;	// set valid tower position under these
-						if(column < 5) mapArray[column+1][row] = 2;
+				if (row < 6) {
+					if (mapArray[column][row + 1] == 1 && mapArray[column][row] == 1) { // →→
+						if (column > 0 && row < 7)
+							mapArray[column - 1][row + 1] = 2; // set valid
+																// tower
+																// position
+																// under these
+						if (column < 5)
+							mapArray[column + 1][row] = 2;
 					}
 				}
-				if(column < 5){
-					if(mapArray[column+1][row] == 1 && mapArray[column][row] == 1){	// ↓
-																					// ↓
-						if(row < 7) mapArray[column][row+1] = 2;					// set valid tower position on the right of these
-						if(column < 5 && row > 0) mapArray[column+1][row-1] = 2;
+				if (column < 5) {
+					if (mapArray[column + 1][row] == 1 && mapArray[column][row] == 1) { // ↓
+																						// ↓
+						if (row < 7)
+							mapArray[column][row + 1] = 2; // set valid tower
+															// position on the
+															// right of these
+						if (column < 5 && row > 0)
+							mapArray[column + 1][row - 1] = 2;
 					}
 				}
 			}
 		}
 		for (int column = 0; column < 5; column++) {
 			for (int row = 0; row < 7; row++) {
-				if(mapArray[column][row] == 2 && mapArray[column][row+1] == 0 && mapArray[column+1][row] == 1 && mapArray[column+1][row+1] == 2){
-					mapArray[column][row+1] = 2;
+				if (mapArray[column][row] == 2 && mapArray[column][row + 1] == 0 && mapArray[column + 1][row] == 1
+						&& mapArray[column + 1][row + 1] == 2) {
+					mapArray[column][row + 1] = 2;
 				}
-				if(mapArray[column][row] == 2 && mapArray[column][row+1] == 1 && mapArray[column+1][row] == 0 && mapArray[column+1][row+1] == 2){
-					mapArray[column+1][row] = 2;
+				if (mapArray[column][row] == 2 && mapArray[column][row + 1] == 1 && mapArray[column + 1][row] == 0
+						&& mapArray[column + 1][row + 1] == 2) {
+					mapArray[column + 1][row] = 2;
 				}
 			}
 		}
-		mapArray[0][6] = 0; mapArray[0][7] = 0;
+		mapArray[0][6] = 0;
+		mapArray[0][7] = 0;
 	}
-	
+
 	private void printMapArray() {
 		StringBuilder sb = new StringBuilder();
 		for (int column = 0; column < 6; column++) {
