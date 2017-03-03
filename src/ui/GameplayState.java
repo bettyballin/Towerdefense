@@ -4,6 +4,7 @@ import model.entities.Enemy;
 import model.entities.Life;
 import model.entities.Money;
 import model.entities.Timer;
+import model.entities.Wave;
 import model.events.LifeOverEvent;
 import model.events.TimeEvent;
 import model.factory.BackgroundFactory;
@@ -11,6 +12,9 @@ import model.factory.PathTileFactory;
 import model.factory.TowerFactory;
 import model.factory.TowerTileFactory;
 import model.factory.WaveFactory;
+import model.options.Options;
+
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -77,7 +81,7 @@ public class GameplayState extends BasicGameState {
 		while (t.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, t.createEntity());
 		}
-		//create two Buttons 
+		// create two Buttons
 		Entity towerbutl = new Entity("towerbutl");
 		entityManager.addEntity(this.stateID, towerbutl);
 
@@ -117,6 +121,14 @@ public class GameplayState extends BasicGameState {
 		entityManager.addEntity(this.stateID, money);
 
 		Life life = new Life("life");
+
+		if (Options.getInstance().getDifficulty() == "NORMAL") {
+			life.setLife(15);
+		}
+		if (Options.getInstance().getDifficulty() == "SCHWER") {
+			life.setLife(10);
+		}
+
 		entityManager.addEntity(this.stateID, life);
 
 		Entity gameLost = new Entity("gamelost");
@@ -150,6 +162,14 @@ public class GameplayState extends BasicGameState {
 				g.drawRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
 				g.setColor(Color.green);
 				g.fillRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getLife() * 3, 5);
+			}
+			// g.setFont(new TrueTypeFont(new java.awt.Font("Verdana",java.awt.Font.BOLD, 15), true));
+			if (entity.getID() == "towerbutr") {
+
+				g.drawString("-80", entity.getPosition().x - 10, entity.getPosition().y + 20);
+			}
+			if (entity.getID() == "towerbutl") {
+				g.drawString("-50", entity.getPosition().x - 10, entity.getPosition().y + 20);
 			}
 		}
 

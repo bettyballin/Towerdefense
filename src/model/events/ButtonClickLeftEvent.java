@@ -34,12 +34,12 @@ public class ButtonClickLeftEvent extends MouseClickedEvent {
 				if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 					x = gc.getInput().getMouseX();
 					y = gc.getInput().getMouseY();
-					System.out.println("nicht geklickt");
+				
 					// if left button is clicked, proof the position of Input Mouse and left button
 					if (((e.getPosition().x - 10) < x) && (x <= (e.getPosition().x + 10))
 							&& (e.getPosition().y - 10 < y) && (y <= e.getPosition().y + 10)) {
 						isValidPosition = true;
-						System.out.println("geklickt");
+						
 
 					}
 				}

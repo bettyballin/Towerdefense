@@ -34,7 +34,7 @@ public class ButtonClickRightEvent extends MouseClickedEvent {
 				if (gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 					x = gc.getInput().getMouseX();
 					y = gc.getInput().getMouseY();
-					System.out.println("is not yet clicked");
+				
 					//if right button is clicked, proof the position of Input Mouse and right button
 					if (((e.getPosition().x - 10) < x) && (x <= e.getPosition().x + 10) && (e.getPosition().y - 10 < y)
 							&& (y <= e.getPosition().y + 10))

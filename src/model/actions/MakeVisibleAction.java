@@ -19,14 +19,14 @@ import eea.engine.entity.StateBasedEntityManager;
 
 public class MakeVisibleAction implements Action {
 
-	private ImageRenderComponent image;
+	//private ImageRenderComponent image;
 
 	public MakeVisibleAction() {
-		try {
+		/*try {
 			image = new ImageRenderComponent(new Image("assets/towerdot2.png"));
 		} catch (SlickException e) {
 			System.out.println("/assets/towerdot2.png not found in MakeVisibleAction.java");
-		}
+		}*/
 	}
 
 	private boolean isValidTowerTilePosition(TowerTile tile, Vector2f position) {
