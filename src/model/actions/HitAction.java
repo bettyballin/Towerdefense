@@ -38,7 +38,7 @@ public class HitAction implements Action {
 			enemy.changeLife(-tower.getStrength());
 			if (tower.getID() == "iceTower" && enemy.getSpeed() > 0) {
 				enemy.changeSpeed(-tower.getSlowdown());
-
+				enemy.setIceHit(true);
 			}
 			// if no life left in enemy, remove him
 			if (enemy.getLife() == 0) {

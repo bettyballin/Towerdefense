@@ -1,16 +1,24 @@
 package model.entities;
 
-import eea.engine.entity.Entity;
 import ui.Towerdefense;
+import eea.engine.entity.Entity;
 import model.interfaces.ILife;
+import model.options.Options;
 
-public class Life extends Entity implements ILife{
+public class Life extends Entity implements ILife {
 
 	private int lifeLeft;
-	
+
 	public Life(String entityID) {
 		super(entityID);
-		this.lifeLeft = Towerdefense.life;
+		if (Options.getInstance().getDifficulty() == "LEICHT") {
+			this.lifeLeft = Towerdefense.lifeEinfach;
+		}
+		if (Options.getInstance().getDifficulty() == "NORMAL") {
+			this.lifeLeft = Towerdefense.lifeNormal;
+		} else {
+			this.lifeLeft = Towerdefense.lifeSchwer;
+		}
 	}
 
 	@Override
@@ -26,9 +34,8 @@ public class Life extends Entity implements ILife{
 	@Override
 	public void changeLife(int life) {
 		lifeLeft += life;
-		if(lifeLeft < 0) lifeLeft = 0;
+		if (lifeLeft < 0)
+			lifeLeft = 0;
 	}
-	
-	
-		
+
 }

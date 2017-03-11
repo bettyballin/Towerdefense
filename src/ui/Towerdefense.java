@@ -25,7 +25,9 @@ public class Towerdefense extends StateBasedGame {
 	public static final int[] homeTower = { 0, 6, 600, 2, 400 }; // costs, strength, speed, slowdown, range
 	public static final int startBudget = 100;
 	public static final int moneyPerEnemy = 5;
-	public static final int life = 20;
+	public static final int lifeEinfach = 20;
+	public static final int lifeNormal = 15;
+	public static final int lifeSchwer = 10;
 
 	public Towerdefense() {
 		super("Towerdefense");

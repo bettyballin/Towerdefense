@@ -4,7 +4,7 @@ import model.entities.Enemy;
 import model.entities.Life;
 import model.entities.Money;
 import model.entities.Timer;
-import model.entities.Wave;
+import model.entities.TowerTile;
 import model.events.LifeOverEvent;
 import model.events.TimeEvent;
 import model.factory.BackgroundFactory;
@@ -12,9 +12,6 @@ import model.factory.PathTileFactory;
 import model.factory.TowerFactory;
 import model.factory.TowerTileFactory;
 import model.factory.WaveFactory;
-import model.options.Options;
-
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -41,10 +38,14 @@ public class GameplayState extends BasicGameState {
 
 	private int stateID;
 	private StateBasedEntityManager entityManager;
-
+	private Integer spiderWaveSize;
+	private Integer waspWaveSize;
+	
 	GameplayState(int stateID) {
 		this.stateID = stateID;
 		this.entityManager = StateBasedEntityManager.getInstance();
+		this.spiderWaveSize = 3;
+		this.waspWaveSize = 0;
 	}
 
 	@Override
@@ -81,17 +82,11 @@ public class GameplayState extends BasicGameState {
 		while (t.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, t.createEntity());
 		}
-		// create two Buttons
-		Entity towerbutl = new Entity("towerbutl");
-		entityManager.addEntity(this.stateID, towerbutl);
-
-		Entity towerbutr = new Entity("towerbutr");
-		entityManager.addEntity(this.stateID, towerbutr);
-
+		
 		TowerFactory f = new TowerFactory("homeTower", new Vector2f(750, 530));
 		entityManager.addEntity(this.stateID, f.createEntity());
 
-		Timer timer = new Timer("timer");
+		Timer timer = new Timer("timer");		
 		TimeEvent countdown = new TimeEvent(1000, true);
 		countdown.addAction(new Action() {
 			@Override
@@ -101,33 +96,56 @@ public class GameplayState extends BasicGameState {
 		});
 		timer.addComponent(countdown);
 		entityManager.addEntity(this.stateID, timer);
-
-		Entity wave = new Entity("waveTimer");
-		TimeEvent waveTimer = new TimeEvent(timer.generateWaveTimer(), true);
-		waveTimer.addAction(new Action() {
+		
+		Entity wave = new Entity("wave");
+		TimeEvent spiderWaveTimer = new TimeEvent(7000, true);
+		spiderWaveTimer.addAction(new Action() {
 			@Override
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 				Timer timer = (Timer) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE,
 						"timer");
-				WaveFactory w = new WaveFactory("spider", timer.generateWaveCount(), 500);
+				WaveFactory w = new WaveFactory("spider", spiderWaveSize, 500);
 				entityManager.addEntity(Towerdefense.GAMEPLAYSTATE, w.createEntity());
-				timer.setTimer(timer.generateWaveTimer());
+				timer.setTimer(7000);
 			}
 		});
-		wave.addComponent(waveTimer);
+		Event spiderWaveClock = new TimeEvent(20000, true);
+		spiderWaveClock.addAction(new Action() {
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				Long increase = Math.round(Math.log(spiderWaveSize.floatValue()));
+				spiderWaveSize += increase.intValue();
+			}
+		});
+		TimeEvent waspWaveTimer = new TimeEvent(7000, true);
+		waspWaveTimer.addAction(new Action() {
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				WaveFactory w = new WaveFactory("wasp", waspWaveSize, 700);
+				entityManager.addEntity(Towerdefense.GAMEPLAYSTATE, w.createEntity());
+			}
+		});
+		Event waspWaveClock = new TimeEvent(25000, true);
+		waspWaveClock.addAction(new Action() {
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				if(waspWaveSize > 1) {
+					Long increase = Math.round(Math.log(waspWaveSize.floatValue()));
+					waspWaveSize += increase.intValue();
+				}
+				else waspWaveSize++;
+			}
+		});
+		wave.addComponent(spiderWaveTimer);
+		wave.addComponent(spiderWaveClock);
+		wave.addComponent(waspWaveTimer);
+		wave.addComponent(waspWaveClock);
 		entityManager.addEntity(this.stateID, wave);
 
 		Money money = new Money("money");
 		entityManager.addEntity(this.stateID, money);
 
 		Life life = new Life("life");
-
-		if (Options.getInstance().getDifficulty() == "NORMAL") {
-			life.setLife(15);
-		}
-		if (Options.getInstance().getDifficulty() == "SCHWER") {
-			life.setLife(10);
-		}
 
 		entityManager.addEntity(this.stateID, life);
 
@@ -149,6 +167,7 @@ public class GameplayState extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		entityManager.renderEntities(container, game, g);
 		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 20), true));
+		g.setColor(Color.white);
 		int amount = ((Money) entityManager.getEntity(this.stateID, "money")).getAmount();
 		g.drawString("Money: " + amount, 600, 0);
 		g.drawString(
@@ -161,18 +180,16 @@ public class GameplayState extends BasicGameState {
 				g.setColor(Color.black);
 				g.drawRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
 				g.setColor(Color.green);
+				if(((Enemy) entity).getIceHit()) g.setColor(Color.blue);
 				g.fillRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getLife() * 3, 5);
 			}
-			// g.setFont(new TrueTypeFont(new java.awt.Font("Verdana",java.awt.Font.BOLD, 15), true));
-			if (entity.getID() == "towerbutr") {
-
-				g.drawString("-80", entity.getPosition().x - 10, entity.getPosition().y + 20);
-			}
-			if (entity.getID() == "towerbutl") {
-				g.drawString("-50", entity.getPosition().x - 10, entity.getPosition().y + 20);
+			if (entity.getID() == "towertile" && ((TowerTile)entity).isVisible()) {
+				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana",java.awt.Font.PLAIN, 15), true));
+				g.setColor(Color.white);
+				g.drawString(""+Towerdefense.bulletTower[0], entity.getPosition().x - 30, entity.getPosition().y + 20);
+				g.drawString(""+Towerdefense.iceTower[0], entity.getPosition().x + 15, entity.getPosition().y + 20);
 			}
 		}
-
 		g.setColor(Color.white);
 	}
 

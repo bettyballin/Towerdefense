@@ -38,9 +38,15 @@ import model.events.MoveRightEvent;
 public class EnemyFactory implements IEntityFactory {
 
 	private final String type;
+	private Image img;
 
 	public EnemyFactory(String type) {
 		this.type = type;
+		try {
+			img = new Image("assets/"+type+".png");
+		} catch (SlickException e) {
+			System.out.println("/assets/"+type+".png not found in EnemyFactory.java");
+		}
 	}
 
 	@Override
@@ -48,12 +54,7 @@ public class EnemyFactory implements IEntityFactory {
 		Enemy enemy = new Enemy(type);
 		enemy.setScale(0.5f);
 		enemy.setPosition(new Vector2f(10,50));
-
-		try {
-			enemy.addComponent(new ImageRenderComponent(new Image("assets/"+type+".png")));
-		} catch (SlickException e) {
-			System.out.println("/assets/"+type+".png not found in EnemyFactory.java");
-		}
+		enemy.addComponent(new ImageRenderComponent(img));
 		
 		MoveRightEvent moveRightEvent = new MoveRightEvent("moveright", enemy);
 		moveRightEvent.addAction(new MoveRightAction(enemy.getSpeed()/100));

@@ -12,10 +12,11 @@ public class Enemy extends Entity implements ILife, ISpeed {
 	private int life;
 	private final int maxLife;
 	private float speed;
+	private boolean isBlue;
 
 	public Enemy(String entityID) {
 		super(entityID);
-
+		this.isBlue = false;
 		int[] stats = { 0, 0, 0 };
 		if (entityID == "spider") {
 			if (Options.getInstance().getDifficulty() == "NORMAL") {
@@ -43,6 +44,12 @@ public class Enemy extends Entity implements ILife, ISpeed {
 
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+	public void setIceHit(boolean isBlue) {
+		this.isBlue = isBlue;
+	}
+	public boolean getIceHit() {
+		return isBlue;
 	}
 
 	public int getLife() {

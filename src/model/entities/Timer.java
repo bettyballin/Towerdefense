@@ -17,22 +17,14 @@ public class Timer extends Entity {
 		this.timer = time;
 	}
 
-	public int generateWaveTimer() {
-		Double timer = Math.random() * 15000;
-		timer -= timer%1000;					// remove milliseconds
-		if (timer < 5000)
-			timer += 5000;
-		this.timer = 5000;
-		return 5000;
-	}
-	
-	public int generateWaveCount(){
-		Double count = Math.random() * 8;
-		if (count < 2)
-			count += 2;
+	public int generateWaveCount(int min, int max){
+		Double count = Math.random() * max;
+		if (count < min)
+			count += min;
 		this.count = count.intValue();
 		return count.intValue();
 	}
+	
 	public int getCurrentTimer(){
 		return timer;
 	}

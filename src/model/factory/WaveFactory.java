@@ -27,18 +27,6 @@ public class WaveFactory implements IEntityFactory {
 		Wave wave = new Wave(enemyType, waveSize);
 
 		TimeEvent waveTimer = new TimeEvent(timeBetweenSpawns, true);
-		//List<Enemy> wavelist = wave.getWave();
-		/*for (Enemy e : wavelist) {
-			if (Options.getInstance().getDifficulty() == "NORMAL") {
-				e.setLife(20);
-				e.setSpeed(10);
-			}
-
-			if (Options.getInstance().getDifficulty() == "SCHWER") {
-				e.setLife(25);
-				e.setSpeed(20);
-			}
-		}*/
 		waveTimer.addAction(new SpawnEnemyAction(wave.getWave()));
 		wave.addComponent(waveTimer);
 

@@ -39,7 +39,7 @@ public class MouseOverTowerTileEvent  extends Event{
 		boolean isValidPosition = false;
 		for(Entity e : it){
 			if(e.getID() == "towertile"){
-				if(isValidTowerTilePosition((TowerTile) e)){
+				if(isValidTowerTilePosition((TowerTile) e) && !((TowerTile)e).hasTower()){
 					isValidPosition = true;
 					currentTile = (TowerTile) e;
 				}
@@ -47,9 +47,4 @@ public class MouseOverTowerTileEvent  extends Event{
 		}
 		return isValidPosition;
 	}
-
-	public TowerTile getCurrentTile() {
-		return currentTile;
-	}
-
 }
