@@ -1,15 +1,18 @@
 package model.entities;
 
+import model.interfaces.ISpeed;
 import model.interfaces.IStrength;
 import eea.engine.entity.Entity;
 
-public class Shoot extends Entity implements IStrength {
+public class Shoot extends Entity implements IStrength,ISpeed {
 
 	protected int strength;
+	protected float speed;
 
 	public Shoot(String id, int strength) {
 		super(id);
 		this.strength = strength;
+		this.speed = 70f;
 	}
 
 	@Override
@@ -26,6 +29,16 @@ public class Shoot extends Entity implements IStrength {
 	@Override
 	public void setStrength(int strength) {
 		this.strength = strength;
+	}
+
+	@Override
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+	@Override
+	public float getSpeed() {
+		return speed;
 	}
 
 }

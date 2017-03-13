@@ -11,6 +11,7 @@ public class Tower extends Entity implements IStrength, ISpeed {
 	private float speed;
 	private int slowdown;
 	private int range;
+	private boolean showingButtons;
 
 	public Tower(String entityID) {
 		super(entityID);
@@ -19,6 +20,7 @@ public class Tower extends Entity implements IStrength, ISpeed {
 		speed = 0;
 		slowdown = 0;
 		range = 0;
+		showingButtons = false;
 	}
 
 	public void setCosts(int cost) {
@@ -41,6 +43,10 @@ public class Tower extends Entity implements IStrength, ISpeed {
 		this.range = range;
 	}
 
+	public void setShowingButtons(boolean show) {
+		this.showingButtons = show;
+	}
+
 	public int getCosts() {
 		return cost;
 	}
@@ -60,7 +66,9 @@ public class Tower extends Entity implements IStrength, ISpeed {
 	public int getRange() {
 		return range;
 	}
-
+	public boolean getShowingButtons() {
+		return showingButtons;
+	}
 	public void changeCosts(int cost) {
 		this.cost += cost;
 	}

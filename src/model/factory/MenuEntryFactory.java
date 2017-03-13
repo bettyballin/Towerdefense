@@ -4,11 +4,14 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.state.StateBasedGame;
 
 import eea.engine.action.Action;
+import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
+import eea.engine.event.NOTEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import eea.engine.interfaces.IEntityFactory;
@@ -21,35 +24,59 @@ public class MenuEntryFactory implements IEntityFactory {
     private Action action;
     private int entry_height = 150;
     private Boolean noIcon;
+    private ImageRenderComponent img1;
+    private ImageRenderComponent img2;
+    private ImageRenderComponent img3;
     
 	public MenuEntryFactory(String name, GameContainer c, Action action, int entry_height, Boolean noIcon) {
 		this.name = name;
 	    this.action = action;
 	    this.entry_height = entry_height;
 	    this.noIcon = noIcon;
+	    try {
+			this.img1 = new ImageRenderComponent(new Image("assets/entry.png"));
+			this.img2 = new ImageRenderComponent(new Image("assets/entrybackground.png"));
+			this.img3 = new ImageRenderComponent(new Image("assets/entry2.png"));
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Entity createEntity() {
+		entry = new Entity(name);
+		entry.setPosition(new Vector2f(245,entry_height));
+		entry.setScale(0.55f);
+		if(noIcon) entry.addComponent(img1);
+		else entry.addComponent(img2);			
 		
-		try {
-			float scale = 0.55f;
-			
-			entry = new Entity(name);
-			entry.setPosition(new Vector2f(245,entry_height));
-			entry.setScale(scale);
-			if(noIcon) entry.addComponent(new ImageRenderComponent(new Image("assets/entry.png")));
-			else entry.addComponent(new ImageRenderComponent(new Image("assets/entrybackground.png")));
-			ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-			mainEvents.addAction(action);			
-			entry.addComponent(mainEvents);
-
-			return entry;
-			
-		} catch (SlickException e) {
-			e.printStackTrace();
-			return null;
-		}		
+		MouseEnteredEvent entered = new MouseEnteredEvent();
+		entered.addAction(new Action(){
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				entry.removeComponent("ImageRenderComponent");
+				if(noIcon) entry.addComponent(img3);
+				else entry.addComponent(img2);			
+			}			
+		});
+		entry.addComponent(entered);
+		
+		NOTEvent notEntered = new NOTEvent(new MouseEnteredEvent());
+		notEntered.addAction(new Action(){
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				entry.removeComponent("ImageRenderComponent");
+				if(noIcon) entry.addComponent(img1);
+				else entry.addComponent(img2);	
+			}			
+		});
+		entry.addComponent(notEntered);
+		
+		ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		mainEvents.addAction(action);			
+		entry.addComponent(mainEvents);
+		
+		return entry;	
 	}
 
 }

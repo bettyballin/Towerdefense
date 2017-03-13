@@ -8,10 +8,12 @@ import eea.engine.action.Action;
 import eea.engine.component.Component;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
+import model.entities.Enemy;
 import model.entities.Money;
 import model.entities.Tower;
 import model.entities.TowerTile;
 import model.factory.TowerFactory;
+import ui.GameplayState;
 import ui.Towerdefense;
 
 public class SpawnTowerAction implements Action {
@@ -32,11 +34,6 @@ public class SpawnTowerAction implements Action {
 		position = new Vector2f(position.x - x + 50, position.y - y + 50);
 		boolean alreadyUsed = false;
 		Entity e = event.getOwnerEntity();
-		if (Tower.class.isInstance(e)) {
-			if (((Tower) e).getPosition().x == position.x && ((Tower) e).getPosition().y == position.y) {
-				alreadyUsed = true;
-			}
-		}
 		if (!alreadyUsed) {
 			Money money = (Money) StateBasedEntityManager.getInstance().getEntity(sb.getCurrentStateID(), "money");
 			int amount = 0;
@@ -48,13 +45,12 @@ public class SpawnTowerAction implements Action {
 				money.changeAmount(-amount);
 				Tower tower = (Tower) new TowerFactory(towerType, position).createEntity();
 				StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
-				if(TowerTile.class.isInstance(e)){
-					((TowerTile)e).setHasTower(true);
-					((TowerTile)e).setTower(tower);
+				GameplayState.getInstance().addTower(tower);
+				if (TowerTile.class.isInstance(e)) {
+					((TowerTile) e).setHasTower(true);
+					((TowerTile) e).setTower(tower);
 				}
 			}
-
 		}
 	}
-
 }

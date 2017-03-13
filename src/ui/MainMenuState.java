@@ -27,6 +27,7 @@ import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.Event;
 import eea.engine.event.basicevents.KeyPressedEvent;
+import eea.engine.event.basicevents.MouseEnteredEvent;
 
 public class MainMenuState extends BasicGameState {
 
@@ -55,7 +56,8 @@ public class MainMenuState extends BasicGameState {
 		// Neues Spiel starten
 		Action new_game = new ChangeStateInitAction(Towerdefense.GAMEPLAYSTATE);
 		m = new MenuEntryFactory("Neues Spiel starten", container, new_game, start_position+distance*counter,true);
-		entityManager.addEntity(this.stateID, m.createEntity());
+		Entity startGame = m.createEntity();
+		entityManager.addEntity(this.stateID, startGame);
 		counter++;
 		
 		// Spielstand laden

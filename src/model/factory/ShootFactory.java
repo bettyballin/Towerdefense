@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import model.actions.HitAction;
 import model.entities.Shoot;
 import model.entities.Tower;
+import model.interfaces.ISpeed;
 import eea.engine.action.basicactions.DestroyEntityAction;
 import eea.engine.action.basicactions.MoveForwardAction;
 import eea.engine.component.render.ImageRenderComponent;
@@ -54,7 +55,7 @@ public class ShootFactory implements IEntityFactory {
 		shoot.addComponent(mainEvent);
 		
 		mainEvent = new LoopEvent();
-		mainEvent.addAction(new MoveForwardAction(0.7f));
+		mainEvent.addAction(new MoveForwardAction((ISpeed) shoot));
 		shoot.addComponent(mainEvent);
 		
 		return shoot;

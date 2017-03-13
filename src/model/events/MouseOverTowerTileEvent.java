@@ -37,6 +37,8 @@ public class MouseOverTowerTileEvent  extends Event{
 		List<Entity> it = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
 		position = new Vector2f(gc.getInput().getMouseX(),gc.getInput().getMouseY());	
 		boolean isValidPosition = false;
+		Entity towerTile = getOwnerEntity();
+		System.out.println(towerTile.getID());
 		for(Entity e : it){
 			if(e.getID() == "towertile"){
 				if(isValidTowerTilePosition((TowerTile) e) && !((TowerTile)e).hasTower()){

@@ -19,13 +19,14 @@ public class Enemy extends Entity implements ILife, ISpeed {
 		this.isBlue = false;
 		int[] stats = { 0, 0, 0 };
 		if (entityID == "spider") {
-			if (Options.getInstance().getDifficulty() == "NORMAL") {
+			/*if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.spiderEnemyNormal;
 			} else if (Options.getInstance().getDifficulty() == "SCHWER") {
 				stats = Towerdefense.spiderEnemySchwer;
 			} else {
 				stats = Towerdefense.spiderEnemyEinfach;
-			}
+			}*/
+			stats = Towerdefense.spiderEnemy;
 		} else
 			stats = Towerdefense.wespEnemy;
 		this.life = stats[0];

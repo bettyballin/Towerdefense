@@ -1,37 +1,27 @@
 package model.factory;
 
 import org.newdawn.slick.GameContainer;
-import model.interfaces.IStrength;
+
 import ui.Towerdefense;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import model.actions.HitAction;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.DestroyEntityAction;
-import eea.engine.action.basicactions.MoveBackwardAction;
 import eea.engine.action.basicactions.MoveDownAction;
 import eea.engine.action.basicactions.MoveRightAction;
-import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
-import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
-import eea.engine.event.OREvent;
-import eea.engine.event.basicevents.CollisionEvent;
-import eea.engine.event.basicevents.LoopEvent;
 import eea.engine.interfaces.IEntityFactory;
-import model.actions.ShootAction;
 import model.entities.Enemy;
 import model.entities.Life;
-import model.entities.PathTile;
 import model.events.MoveDownEvent;
 import model.events.MoveRightEvent;
 
@@ -57,11 +47,11 @@ public class EnemyFactory implements IEntityFactory {
 		enemy.addComponent(new ImageRenderComponent(img));
 		
 		MoveRightEvent moveRightEvent = new MoveRightEvent("moveright", enemy);
-		moveRightEvent.addAction(new MoveRightAction(enemy.getSpeed()/100));
+		moveRightEvent.addAction(new MoveRightAction(enemy));
 		enemy.addComponent(moveRightEvent);
 
 		MoveDownEvent moveDownEvent = new MoveDownEvent("movedown", enemy);
-		moveDownEvent.addAction(new MoveDownAction(enemy.getSpeed()/100));
+		moveDownEvent.addAction(new MoveDownAction(enemy));
 		enemy.addComponent(moveDownEvent);
 
 		Event decreaseLife = new LeavingScreenEvent();
@@ -74,7 +64,7 @@ public class EnemyFactory implements IEntityFactory {
 			
 		});
 		enemy.addComponent(decreaseLife);
-    	
+		
 		return enemy;
 	}
 

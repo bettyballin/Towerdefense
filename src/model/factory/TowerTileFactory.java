@@ -1,21 +1,28 @@
 package model.factory;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.state.StateBasedGame;
 
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
+import eea.engine.event.basicevents.MouseEnteredEvent;
 import eea.engine.interfaces.IEntityFactory;
-import model.actions.MakeUnvisibleAction;
-import model.actions.MakeVisibleAction;
+import model.actions.MakeTowerSelectionUnvisibleAction;
+import model.actions.MakeTowerSelectionVisibleAction;
 import model.actions.SpawnTowerAction;
 import model.entities.TowerTile;
-import model.events.ButtonClickLeftEvent;
-import model.events.ButtonClickRightEvent;
-import model.events.MouseOverTowerTileEvent;
+import model.events.MouseOnLeftHalfEvent;
+import model.events.MouseOnRightHalfEvent;
+import ui.Towerdefense;
 
 public class TowerTileFactory implements IEntityFactory {
 
@@ -56,25 +63,25 @@ public class TowerTileFactory implements IEntityFactory {
 	public Entity createEntity() {
 		TowerTile towerdot = tileList.get(nextTile++);
 
-		Event overTile = new MouseOverTowerTileEvent("mouseovertile");
-		overTile.addAction(new MakeVisibleAction());
+		Event overTile = new MouseEnteredEvent();
+		overTile.addAction(new MakeTowerSelectionVisibleAction());
 		towerdot.addComponent(overTile);
 
-		Event notOverTile = new NOTEvent(new MouseOverTowerTileEvent("mouseNotOvertile"));
-		notOverTile.addAction(new MakeUnvisibleAction());
+		Event notOverTile = new NOTEvent(new MouseEnteredEvent());
+		notOverTile.addAction(new MakeTowerSelectionUnvisibleAction());
 		towerdot.addComponent(notOverTile);
 		
 		// if ButtonCLickLeftEvent is true, build a bulletTower
-		Event buttonclickleft = new ANDEvent(new ButtonClickLeftEvent(), new MouseClickedEvent());
+		Event buttonclickleft = new ANDEvent(new MouseOnLeftHalfEvent(), new MouseClickedEvent());
 		buttonclickleft.addAction(new SpawnTowerAction("bulletTower"));
 		
-		// if ButtonClickRightEvent is true, build a iceTower
-		Event buttonclickright = new ANDEvent(new ButtonClickRightEvent(), new MouseClickedEvent());
+		// if MouseOnRightHalfEvent is true, build a iceTower
+		Event buttonclickright = new ANDEvent(new MouseOnRightHalfEvent(), new MouseClickedEvent());
 		buttonclickright.addAction(new SpawnTowerAction("iceTower"));
 
 		towerdot.addComponent(buttonclickright);
 		towerdot.addComponent(buttonclickleft);
-
+		
 		return towerdot;
 	}
 
