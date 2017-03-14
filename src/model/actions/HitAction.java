@@ -13,7 +13,6 @@ import model.entities.Money;
 import model.entities.Shoot;
 import model.entities.Tower;
 import model.factory.ExplosionFactory;
-import ui.GameplayState;
 import ui.Towerdefense;
 
 public class HitAction implements Action {
@@ -43,9 +42,6 @@ public class HitAction implements Action {
 			}
 			// if no life left in enemy, remove him
 			if (enemy.getLife() == 0) {
-				GameplayState.getInstance().removeEnemy(enemy);
-				StateBasedEntityManager.getInstance().removeEntity(state, enemy);
-
 				// create explosion at the place where enemy was shot
 				Entity explosion = new Entity("Explosion");
 				explosion = new ExplosionFactory(tower, shoot.getPosition().x + 40, shoot.getPosition().y + 50, 30, 50)

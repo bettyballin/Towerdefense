@@ -42,25 +42,16 @@ public class GameplayState extends BasicGameState {
 
 	private int stateID;
 	private StateBasedEntityManager entityManager;
-	private List<Enemy> enemies;
-	private List<Tower> tower;
 	private int spiderWaveSize;
 	private int waspWaveSize;
-	private int waveCount; 
-	private static final GameplayState gameplayState = new GameplayState(Towerdefense.GAMEPLAYSTATE);
-	
-	public static GameplayState getInstance() {
-	    return gameplayState;
-	}
-	
+	private int waveCount;
+
 	GameplayState(int stateID) {
 		this.stateID = stateID;
 		this.entityManager = StateBasedEntityManager.getInstance();
 		this.spiderWaveSize = 3;
 		this.waspWaveSize = 0;
 		this.waveCount = 0;
-		this.enemies = new ArrayList<Enemy>();
-		this.tower = new ArrayList<Tower>();
 	}
 
 	@Override
@@ -199,24 +190,22 @@ public class GameplayState extends BasicGameState {
 		g.drawString("Wave " + ((Timer) entityManager.getEntity(this.stateID, "timer")).getWaveCount() + "/20", 600,
 				60);
 		g.drawString("Life left: " + ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 600, 90);
-		System.out.println(this.enemies.size());
-		for (Enemy enemy : this.enemies) {
-			g.setColor(Color.black);
-			g.drawRect(enemy.getPosition().x, enemy.getPosition().y - 30, enemy.getMaxLife() * 3, 5);
-			if (enemy.getIceHit())
-				g.setColor(Color.blue);
-			else
+
+		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
+			if (Enemy.class.isInstance(entity)) {
+				g.setColor(Color.black);
+				g.drawRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
 				g.setColor(Color.green);
-			g.fillRect(enemy.getPosition().x, enemy.getPosition().y - 30, enemy.getLife() * 3, 5);
-		}
-		for(Tower tower : this.tower){
-			if (tower.getShowingButtons()) {
+				if (((Enemy) entity).getIceHit())
+					g.setColor(Color.blue);
+				g.fillRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getLife() * 3, 5);
+			} else if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
 				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 15), true));
 				g.setColor(Color.white);
-				g.drawString("-" + ((Tower) tower).getCosts() * 2, tower.getPosition().x - 45,
-						tower.getPosition().y + 20);
-				Float costs = (float) (((Tower) tower).getCosts() / 2);
-				g.drawString("+" + costs.intValue(), tower.getPosition().x + 15, tower.getPosition().y + 20); 
+				g.drawString("-" + ((Tower) entity).getCosts() * 2, entity.getPosition().x - 30,
+						entity.getPosition().y + 20);
+				Float costs = (float) (((Tower) entity).getCosts() / 2);
+				g.drawString("+" + costs.intValue(), entity.getPosition().x + 15, entity.getPosition().y + 20);
 			}
 		}
 		g.setColor(Color.white);
@@ -230,18 +219,5 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public int getID() {
 		return stateID;
-	}
-	
-	public void addEnemy(Enemy enemy){
-		this.enemies.add(enemy);
-	}
-	public void removeEnemy(Enemy enemy){
-		this.enemies.remove(enemy);
-	}
-	public void addTower(Tower tower){
-		this.tower.add(tower);
-	}
-	public void removeTower(Tower tower){
-		this.tower.remove(tower);
 	}
 }

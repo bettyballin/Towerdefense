@@ -34,7 +34,6 @@ public class DeleteTowerAction implements Action{
 		Money m = (Money) StateBasedEntityManager.getInstance().getEntity(state, "money");
 		Float costs = (float) (tower.getCosts()/2);
 		m.changeAmount(costs.intValue());	
-		GameplayState.getInstance().removeTower(tower);
 		StateBasedEntityManager.getInstance().removeEntity(state, tower);
 	}		
 }

@@ -1,18 +1,11 @@
 package model.factory;
 
-import java.util.List;
-
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.StateBasedGame;
 
-import eea.engine.action.Action;
-import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
-import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
@@ -23,11 +16,8 @@ import model.actions.DeleteTowerAction;
 import model.actions.MakeUpdateSelectionUnvisibleAction;
 import model.actions.MakeUpdateSelectionVisibleAction;
 import model.actions.ShootAction;
-import model.actions.SpawnTowerAction;
 import model.actions.UpdateTowerAction;
-import model.entities.Money;
 import model.entities.Tower;
-import model.entities.TowerTile;
 import model.events.MouseOnLeftHalfEvent;
 import model.events.MouseOnRightHalfEvent;
 import model.events.EnemyDetectionEvent;

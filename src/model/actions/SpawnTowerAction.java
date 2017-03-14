@@ -44,8 +44,6 @@ public class SpawnTowerAction implements Action {
 			if (money.getAmount() >= amount) {
 				money.changeAmount(-amount);
 				Tower tower = (Tower) new TowerFactory(towerType, position).createEntity();
-				StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
-				GameplayState.getInstance().addTower(tower);
 				if (TowerTile.class.isInstance(e)) {
 					((TowerTile) e).setHasTower(true);
 					((TowerTile) e).setTower(tower);

@@ -9,10 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 import eea.engine.entity.Entity;
-import eea.engine.entity.StateBasedEntityManager;
 import model.entities.Enemy;
-import ui.GameplayState;
-import ui.Towerdefense;
 
 public class SpawnEnemyAction implements Action{
 
@@ -28,8 +25,6 @@ public class SpawnEnemyAction implements Action{
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 		if(nextEnemy < waveList.size()){
 			Entity enemy = waveList.get(nextEnemy++);
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE,enemy);	
-			GameplayState.getInstance().addEnemy((Enemy) enemy);
 		}
 	}
 
