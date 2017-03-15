@@ -1,11 +1,11 @@
 package ui;
 
 import model.entities.Enemy;
+import model.entities.Explosion;
 import model.entities.Life;
 import model.entities.Money;
 import model.entities.Timer;
 import model.entities.Tower;
-import model.entities.TowerTile;
 import model.events.LifeOverEvent;
 import model.events.TimeEvent;
 import model.factory.BackgroundFactory;
@@ -13,9 +13,6 @@ import model.factory.PathTileFactory;
 import model.factory.TowerFactory;
 import model.factory.TowerTileFactory;
 import model.factory.WaveFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -44,14 +41,12 @@ public class GameplayState extends BasicGameState {
 	private StateBasedEntityManager entityManager;
 	private int spiderWaveSize;
 	private int waspWaveSize;
-	private int waveCount;
 
 	GameplayState(int stateID) {
 		this.stateID = stateID;
 		this.entityManager = StateBasedEntityManager.getInstance();
 		this.spiderWaveSize = 3;
 		this.waspWaveSize = 0;
-		this.waveCount = 0;
 	}
 
 	@Override
@@ -156,7 +151,7 @@ public class GameplayState extends BasicGameState {
 			@Override
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 				JFrame frame = new JFrame("");
-				JOptionPane.showMessageDialog(frame, "Schade.", "Spiel verloren", 1);
+				JOptionPane.showMessageDialog(frame, "No life left", "Spiel verloren", 1);
 				sb.enterState(Towerdefense.MAINMENUSTATE);
 			}
 		});
@@ -169,7 +164,7 @@ public class GameplayState extends BasicGameState {
 			@Override
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 				JFrame frame = new JFrame("");
-				JOptionPane.showMessageDialog(frame, "Last wave finished - you won!", "Spiel gewonnen", 1);
+				JOptionPane.showMessageDialog(frame, "Last wave finished!", "Spiel gewonnen", 1);
 				sb.enterState(Towerdefense.MAINMENUSTATE);
 			}
 		});
@@ -180,32 +175,30 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		entityManager.renderEntities(container, game, g);
-		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 18), true));
-		g.setColor(Color.white);
+		
 		int amount = ((Money) entityManager.getEntity(this.stateID, "money")).getAmount();
-		g.drawString("Money: " + amount, 600, 0);
-		g.drawString(
-				"Next wave in " + ((Timer) entityManager.getEntity(this.stateID, "timer")).getCurrentTimer() / 1000,
-				600, 30);
-		g.drawString("Wave " + ((Timer) entityManager.getEntity(this.stateID, "timer")).getWaveCount() + "/20", 600,
-				60);
-		g.drawString("Life left: " + ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 600, 90);
-
+		g.drawString("Money: " + amount + " Next wave in "
+				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getCurrentTimer() / 1000 + " Wave "
+				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getWaveCount() + "/20" + " Life left: "
+				+ ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 200, 0);
+		System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
 		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
-			if (Enemy.class.isInstance(entity)) {
+			if(!entity.getID().contains("ile") && !entity.getID().contains("game")) System.out.println(entity.toString());
+			if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
+				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 13), true));
+				g.setColor(Color.white);
+				g.drawString("-" + ((Tower) entity).getCosts() * 2, entity.getPosition().x - 45,
+						entity.getPosition().y + 25);
+				Float costs = (float) (((Tower) entity).getCosts() / 2);
+				g.drawString("+" + costs.intValue(), entity.getPosition().x + 15, entity.getPosition().y + 25);
+			} else if (Enemy.class.isInstance(entity)) {
 				g.setColor(Color.black);
-				g.drawRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
-				g.setColor(Color.green);
+				g.drawRect(entity.getPosition().x -30, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
 				if (((Enemy) entity).getIceHit())
 					g.setColor(Color.blue);
-				g.fillRect(entity.getPosition().x, entity.getPosition().y - 30, ((Enemy) entity).getLife() * 3, 5);
-			} else if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
-				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 15), true));
-				g.setColor(Color.white);
-				g.drawString("-" + ((Tower) entity).getCosts() * 2, entity.getPosition().x - 30,
-						entity.getPosition().y + 20);
-				Float costs = (float) (((Tower) entity).getCosts() / 2);
-				g.drawString("+" + costs.intValue(), entity.getPosition().x + 15, entity.getPosition().y + 20);
+				else
+					g.setColor(Color.green);
+				g.fillRect(entity.getPosition().x - 30, entity.getPosition().y - 30, ((Enemy) entity).getLife() * 3, 5);
 			}
 		}
 		g.setColor(Color.white);

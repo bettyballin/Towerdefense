@@ -29,7 +29,6 @@ public class HitAction implements Action {
 		if (Enemy.class.isInstance(((CollisionEvent) event).getCollidedEntity())) {
 			int state = Towerdefense.GAMEPLAYSTATE;
 			Enemy enemy = (Enemy) ((CollisionEvent) event).getCollidedEntity();
-			Shoot shoot = (Shoot) event.getOwnerEntity();
 
 			// remove shot
 			StateBasedEntityManager.getInstance().removeEntity(state, event.getOwnerEntity());
@@ -42,16 +41,16 @@ public class HitAction implements Action {
 			}
 			// if no life left in enemy, remove him
 			if (enemy.getLife() == 0) {
+				StateBasedEntityManager.getInstance().removeEntity(state, enemy);
 				// create explosion at the place where enemy was shot
 				Entity explosion = new Entity("Explosion");
-				explosion = new ExplosionFactory(tower, shoot.getPosition().x + 40, shoot.getPosition().y + 50, 30, 50)
+				explosion = new ExplosionFactory(tower, enemy.getPosition().x, enemy.getPosition().y+10, 30, 50)
 						.createEntity();
 				StateBasedEntityManager.getInstance().addEntity(state, explosion);
 
-				explosion = new ExplosionFactory(tower, shoot.getPosition().x + 30, shoot.getPosition().y + 30, 100,
+				explosion = new ExplosionFactory(tower, enemy.getPosition().x, enemy.getPosition().y, 100,
 						120).createEntity();
 				StateBasedEntityManager.getInstance().addEntity(state, explosion);
-
 				// get money for dead enemy
 				Money money = (Money) StateBasedEntityManager.getInstance().getEntity(state, "money");
 				money.changeAmount(Towerdefense.moneyPerEnemy);

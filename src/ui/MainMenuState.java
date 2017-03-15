@@ -46,7 +46,7 @@ public class MainMenuState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		
 		// Hintergrundbild laden
-		//if(!Tanks.debug) 
+		//if(!Towerdefense.debug) 
 		setBackground();
 		
     	// Lege eine MenuEntryFactory an
@@ -58,40 +58,6 @@ public class MainMenuState extends BasicGameState {
 		m = new MenuEntryFactory("Neues Spiel starten", container, new_game, start_position+distance*counter,true);
 		Entity startGame = m.createEntity();
 		entityManager.addEntity(this.stateID, startGame);
-		counter++;
-		
-		// Spielstand laden
-		Action load_game = new Action() {
-			@Override
-			public void update(GameContainer gc, StateBasedGame sb, int delta,
-					Component event) {
-				
-				JFileChooser fc = new JFileChooser("saves/");
-				fc.setFileFilter( new FileFilter() {
-					@Override public boolean accept( File f ) {
-						return f.isDirectory() || f.getName().toLowerCase().endsWith( ".towerdefense" );
-					}
-					@Override public String getDescription() {
-						return "Towerdefense-Spielstaende";
-					}
-				});
-				int state = fc.showOpenDialog( null );
-			    
-			    if( state == JFileChooser.APPROVE_OPTION ) {
-			    	//File file = fc.getSelectedFile();
-			    	//Path.getInstance().load(file.getPath());
-			    	sb.enterState(Towerdefense.GAMEPLAYSTATE);
-					try {
-						sb.init(gc);
-					} catch (SlickException e) {
-						e.printStackTrace();
-					}
-			    }
-				
-			}			
-		};
-		m = new MenuEntryFactory("Spielstand laden", container, load_game, start_position+distance*counter,true);
-		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 		
 		// Einstellungen
@@ -130,16 +96,14 @@ public class MainMenuState extends BasicGameState {
 			throws SlickException {
 		
 		entityManager.renderEntities(container, game, g);
-		
+		//System.out.println(entityManager.st)
 		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD,32), true));
 
 		int counter = 0;
 		
-		g.drawString("Hauptmenü", 70, start_position-100);
-		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD,16), true));
-
+		g.drawString("TowerDefense", 70, start_position-100);
+		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.ITALIC,20), true));
 		g.drawString("Neues Spiel", 130, start_position+counter*distance-10); counter++;
-		g.drawString("Spielstand laden", 130, start_position+counter*distance-10); counter++;
 		g.drawString("Einstellungen", 130, start_position+counter*distance-10); counter++;
 		g.drawString("Beenden", 130, start_position+counter*distance-10); counter++;
 		

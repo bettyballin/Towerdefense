@@ -1,14 +1,9 @@
 package model.factory;
 
-import java.util.List;
-
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.IEntityFactory;
 import model.actions.SpawnEnemyAction;
-import model.entities.Enemy;
-import model.entities.Wave;
 import model.events.TimeEvent;
-import model.options.Options;
 
 public class WaveFactory implements IEntityFactory {
 
@@ -24,10 +19,9 @@ public class WaveFactory implements IEntityFactory {
 
 	@Override
 	public Entity createEntity() {
-		Wave wave = new Wave(enemyType, waveSize);
-
+		Entity wave = new Entity("wave");
 		TimeEvent waveTimer = new TimeEvent(timeBetweenSpawns, true);
-		waveTimer.addAction(new SpawnEnemyAction(wave.getWave()));
+		waveTimer.addAction(new SpawnEnemyAction(enemyType, waveSize));
 		wave.addComponent(waveTimer);
 
 		return wave;

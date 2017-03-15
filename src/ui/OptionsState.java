@@ -42,7 +42,7 @@ public class OptionsState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 
-		//if(!Tanks.debug)
+		//if(!Towerdefense.debug)
 		setBackground();
 
     	onEscapePressed();
@@ -69,7 +69,7 @@ public class OptionsState extends BasicGameState {
 		m = new MenuEntryFactory("Ton", container, toggle_sound, start_position+distance*counter,false);
 		entityManager.addEntity(this.stateID, m.createEntity());
 
-		//if(!Tanks.debug) {
+		//if(!Towerdefense.debug) {
 		Entity sound_pic = new Entity("Sound_picture");
 		if(options.isSoundEnabled())
 			sound_pic.addComponent(new ImageRenderComponent(new Image("/assets/sound_enabled.png")));
@@ -100,7 +100,7 @@ public class OptionsState extends BasicGameState {
 		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 		Action back = new ChangeStateAction(Towerdefense.MAINMENUSTATE);
-		m = new MenuEntryFactory("Zurück", container, back, start_position+distance*counter+30,true);
+		m = new MenuEntryFactory("Zur�ck", container, back, start_position+distance*counter+30,true);
 		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 
@@ -145,18 +145,18 @@ public class OptionsState extends BasicGameState {
 
 		if(Options.getInstance().isSoundEnabled()) {
 			entityManager.getEntity(this.stateID, "Sound_picture").removeComponent("SoundPic");
-			//if(!Tanks.debug)
+			//if(!Towerdefense.debug)
 			entityManager.getEntity(this.stateID, "Sound_picture").addComponent(new ImageRenderComponent(new Image("/assets/sound_enabled.png")));
 			g.drawString("Ton ausschalten", 120, entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y-10);
 		} else {
 			entityManager.getEntity(this.stateID, "Sound_picture").removeComponent("SoundPic");
-			//if(!Tanks.debug)
+			//if(!Towerdefense.debug)
 			entityManager.getEntity(this.stateID, "Sound_picture").addComponent(new ImageRenderComponent(new Image("/assets/sound_disabled.png")));
 			g.drawString("Ton einschalten", 120, entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y-10);
 		}
 
 		g.drawString(options.getDifficulty(), 120, entityManager.getEntity(this.stateID, "Schwierigkeit").getPosition().y-10);
-		g.drawString("Zurück", 120, entityManager.getEntity(this.stateID, "Zurück").getPosition().y-10);
+		g.drawString("Zur�ck", 120, entityManager.getEntity(this.stateID, "Zur�ck").getPosition().y-10);
 	}
 
 	@Override

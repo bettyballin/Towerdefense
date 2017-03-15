@@ -16,8 +16,8 @@ public class Towerdefense extends StateBasedGame {
 	public static final int MAINMENUSTATE = 0;
 	public static final int GAMEPLAYSTATE = 1;
 	public static final int OPTIONSTATE = 2;
-	public static final int[] spiderEnemy = { 10, 8}; // life, speed
-	public static final int[] wespEnemy = { 15, 15 }; // life, speed
+	public static final int[] spiderEnemy = { 25, 8}; // life, speed
+	public static final int[] wespEnemy = { 20, 15 }; // life, speed
 	public static final int[] bulletTower = { 50, 5, 600, 0, 250 }; // costs, strength, speed, slowdown, range
 	public static final int[] iceTower = { 80, 2, 500, 2, 250 }; // costs, strength, speed, slowdown, range
 	public static final int[] homeTower = { 0, 6, 600, 0, 400 }; // costs, strength, speed, slowdown, range

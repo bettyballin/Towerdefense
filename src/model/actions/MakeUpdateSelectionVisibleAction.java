@@ -13,11 +13,11 @@ import model.entities.Tower;
 
 public class MakeUpdateSelectionVisibleAction implements Action{
 
-	private Image img;
+	private ImageRenderComponent img;
 	
 	public MakeUpdateSelectionVisibleAction(String tower){
 		try {
-			img = new Image("assets/"+tower+"buttons.png");
+			img = new ImageRenderComponent( new Image("assets/"+tower+"buttons.png"));
 		} catch (SlickException en) {
 			System.out.println("/assets/"+tower+"buttons.png not found in MakeTowerSelectionVisibleAction.java");
 		}
@@ -26,7 +26,8 @@ public class MakeUpdateSelectionVisibleAction implements Action{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 		Entity tower = event.getOwnerEntity();
-		tower.addComponent(new ImageRenderComponent(img));
+		tower.removeComponent("ImageRenderComponent");
+		tower.addComponent(img);
 		((Tower) tower).setShowingButtons(true);
 	}
 

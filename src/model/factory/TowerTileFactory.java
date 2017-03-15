@@ -1,13 +1,7 @@
 package model.factory;
 
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.state.StateBasedGame;
 
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
@@ -20,9 +14,9 @@ import model.actions.MakeTowerSelectionUnvisibleAction;
 import model.actions.MakeTowerSelectionVisibleAction;
 import model.actions.SpawnTowerAction;
 import model.entities.TowerTile;
+import model.events.MouseNotOverTowerEvent;
 import model.events.MouseOnLeftHalfEvent;
 import model.events.MouseOnRightHalfEvent;
-import ui.Towerdefense;
 
 public class TowerTileFactory implements IEntityFactory {
 
@@ -42,7 +36,6 @@ public class TowerTileFactory implements IEntityFactory {
 	public boolean hasEntitiesLeft() {
 		return (nextTile < tileList.size());
 	}
-
 	public void getTowerTileList() {
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
@@ -63,11 +56,11 @@ public class TowerTileFactory implements IEntityFactory {
 	public Entity createEntity() {
 		TowerTile towerdot = tileList.get(nextTile++);
 
-		Event overTile = new MouseEnteredEvent();
+		Event overTile = new ANDEvent(new MouseEnteredEvent(), new MouseNotOverTowerEvent("notovertower"));
 		overTile.addAction(new MakeTowerSelectionVisibleAction());
 		towerdot.addComponent(overTile);
 
-		Event notOverTile = new NOTEvent(new MouseEnteredEvent());
+		Event notOverTile = new NOTEvent(overTile);
 		notOverTile.addAction(new MakeTowerSelectionUnvisibleAction());
 		towerdot.addComponent(notOverTile);
 		
@@ -90,7 +83,7 @@ public class TowerTileFactory implements IEntityFactory {
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
 				if (row < 6) {
-					if (mapArray[column][row + 1] == 1 && mapArray[column][row] == 1) { // →→
+					if (mapArray[column][row + 1] == 1 && mapArray[column][row] == 1) { 
 						if (column > 0 && row < 7)
 							mapArray[column - 1][row + 1] = 2; // set valid
 																// tower
@@ -101,8 +94,8 @@ public class TowerTileFactory implements IEntityFactory {
 					}
 				}
 				if (column < 5) {
-					if (mapArray[column + 1][row] == 1 && mapArray[column][row] == 1) { // ↓
-																						// ↓
+					if (mapArray[column + 1][row] == 1 && mapArray[column][row] == 1) { 
+																						
 						if (row < 7)
 							mapArray[column][row + 1] = 2; // set valid tower
 															// position on the

@@ -49,7 +49,7 @@ public class ExplosionFactory implements IEntityFactory {
 		Entity explosion = new Explosion("explosion", width, height, 0.005f);
 		explosion.setPosition(new Vector2f(posX - 50, posY - 50));
 
-		RenderComponent anim = new AnimationRenderComponent(image, 0.01f, width, height, false);
+		AnimationRenderComponent anim = new AnimationRenderComponent(image, 0.01f, width, height, false);
 		explosion.addComponent(anim);
 
 		return explosion;
