@@ -1,6 +1,5 @@
 package model.factory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eea.engine.entity.Entity;
@@ -17,45 +16,29 @@ import model.entities.TowerTile;
 import model.events.MouseNotOverTowerEvent;
 import model.events.MouseOnLeftHalfEvent;
 import model.events.MouseOnRightHalfEvent;
+import model.path.Path;
 
 public class TowerTileFactory implements IEntityFactory {
 
-	private final int[][] mapArray;
+	private final int[][] pathArray;
 	private List<TowerTile> tileList;
 	private int nextTile;
 
-	public TowerTileFactory(int[][] mapArray) {
-		this.mapArray = mapArray;
-		fillMapArray();
-		this.tileList = new ArrayList<TowerTile>();
-		getTowerTileList();
+	public TowerTileFactory(Path path) {
+		path.createTowerTileArray();
+		this.tileList = path.getTowerTiles();
+		this.pathArray = path.getPathArray();
 		this.nextTile = 0;
-		// printMapArray();
 	}
 
 	public boolean hasEntitiesLeft() {
 		return (nextTile < tileList.size());
 	}
-	public void getTowerTileList() {
-		for (int column = 0; column < 6; column++) {
-			for (int row = 0; row < 8; row++) {
-				if (mapArray[column][row] == 2) {
-					TowerTile towerdot = new TowerTile("towertile");
-					towerdot.setPosition(row * 100, column * 100);
-					tileList.add(towerdot);
-				}
-			}
-		}
-	}
-
-	public int[][] getMapArray() {
-		return mapArray;
-	}
-
+	
 	@Override
 	public Entity createEntity() {
 		TowerTile towerdot = tileList.get(nextTile++);
-
+		
 		Event overTile = new ANDEvent(new MouseEnteredEvent(), new MouseNotOverTowerEvent("notovertower"));
 		overTile.addAction(new MakeTowerSelectionVisibleAction());
 		towerdot.addComponent(overTile);
@@ -78,55 +61,11 @@ public class TowerTileFactory implements IEntityFactory {
 		return towerdot;
 	}
 
-	// fill Path array with valid Tower positions
-	public void fillMapArray() {
-		for (int column = 0; column < 6; column++) {
-			for (int row = 0; row < 8; row++) {
-				if (row < 6) {
-					if (mapArray[column][row + 1] == 1 && mapArray[column][row] == 1) { 
-						if (column > 0 && row < 7)
-							mapArray[column - 1][row + 1] = 2; // set valid
-																// tower
-																// position
-																// under these
-						if (column < 5)
-							mapArray[column + 1][row] = 2;
-					}
-				}
-				if (column < 5) {
-					if (mapArray[column + 1][row] == 1 && mapArray[column][row] == 1) { 
-																						
-						if (row < 7)
-							mapArray[column][row + 1] = 2; // set valid tower
-															// position on the
-															// right of these
-						if (column < 5 && row > 0)
-							mapArray[column + 1][row - 1] = 2;
-					}
-				}
-			}
-		}
-		for (int column = 0; column < 5; column++) {
-			for (int row = 0; row < 7; row++) {
-				if (mapArray[column][row] == 2 && mapArray[column][row + 1] == 0 && mapArray[column + 1][row] == 1
-						&& mapArray[column + 1][row + 1] == 2) {
-					mapArray[column][row + 1] = 2;
-				}
-				if (mapArray[column][row] == 2 && mapArray[column][row + 1] == 1 && mapArray[column + 1][row] == 0
-						&& mapArray[column + 1][row + 1] == 2) {
-					mapArray[column + 1][row] = 2;
-				}
-			}
-		}
-		mapArray[0][6] = 0;
-		mapArray[0][7] = 0;
-	}
-
-	private void printMapArray() {
+	private void printArray() {
 		StringBuilder sb = new StringBuilder();
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
-				sb.append(mapArray[column][row]);
+				sb.append(pathArray[column][row]);
 				sb.append(" ");
 			}
 			sb.append("\n");

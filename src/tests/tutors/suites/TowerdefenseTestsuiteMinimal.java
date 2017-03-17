@@ -1,18 +1,17 @@
 package tests.tutors.suites;
 
-import tests.students.testcases.KeyboardInputTest;
-import tests.students.testcases.ParseMapTest;
+import tests.students.testcases.MainMenuTest;
+import tests.tutors.testcases.PathTest;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class TowerdefenseTestsuiteMinimal {
 	
-	public static Test suite() {
-		
+	public static Test suite() {		
 		TestSuite suite = new TestSuite("Tutor tests for Towerdefense - Minimal");
-		suite.addTest(new JUnit4TestAdapter(ParseMapTest.class));
-		suite.addTest(new JUnit4TestAdapter(KeyboardInputTest.class));
+		suite.addTest(new JUnit4TestAdapter(MainMenuTest.class));
+		suite.addTest(new JUnit4TestAdapter(PathTest.class));
 		return suite;
 	}
 }

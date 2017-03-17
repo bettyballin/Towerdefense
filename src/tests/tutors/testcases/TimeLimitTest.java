@@ -29,8 +29,6 @@ public class TimeLimitTest {
 		
 		// initialize the game in MAINMENUSTATE
 		adapter.initializeGame();
-		adapter.loadMapFromFile(new File("testmaps/extended2/limitedTime"));
-		assertTrue("A correct level was detected as incorrect", adapter.isCorrectMap());
 		assertTrue("The game has not been started in MAINMENUSTATE, current state id = "+adapter.getStateBasedGame().getCurrentStateID(), 
 				0 == adapter.getStateBasedGame().getCurrentStateID());
 		

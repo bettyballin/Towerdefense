@@ -10,7 +10,6 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.basicevents.CollisionEvent;
 import model.entities.Enemy;
 import model.entities.Money;
-import model.entities.Shoot;
 import model.entities.Tower;
 import model.factory.ExplosionFactory;
 import ui.Towerdefense;

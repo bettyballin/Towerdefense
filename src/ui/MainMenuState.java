@@ -73,12 +73,20 @@ public class MainMenuState extends BasicGameState {
 		counter++;
 		
 		
-		Entity new_Game = new Entity("newGame");
-		Event keyEvent = new KeyPressedEvent(Input.KEY_N);
-    	keyEvent.addAction(new ChangeStateInitAction(Towerdefense.GAMEPLAYSTATE));
+		Entity keyListener = new Entity("keyListener");
+		Event keyN = new KeyPressedEvent(Input.KEY_N);
+		keyN.addAction(new ChangeStateInitAction(Towerdefense.GAMEPLAYSTATE));
+    	keyListener.addComponent(keyN);
     	
-    	new_Game.addComponent(keyEvent);
-    	entityManager.addEntity(stateID, new_Game);
+    	Event keyE = new KeyPressedEvent(Input.KEY_E);
+    	keyE.addAction(new ChangeStateInitAction(Towerdefense.OPTIONSTATE));
+    	keyListener.addComponent(keyE);
+    	
+    	Event keyESC = new KeyPressedEvent(Input.KEY_ESCAPE);
+    	keyESC.addAction(new QuitAction());
+    	keyListener.addComponent(keyESC);
+    	
+    	entityManager.addEntity(stateID, keyListener);
 	}
 	
 	private void setBackground() throws SlickException {
@@ -96,16 +104,15 @@ public class MainMenuState extends BasicGameState {
 			throws SlickException {
 		
 		entityManager.renderEntities(container, game, g);
-		//System.out.println(entityManager.st)
 		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD,32), true));
 
 		int counter = 0;
 		
 		g.drawString("TowerDefense", 70, start_position-100);
-		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.ITALIC,20), true));
-		g.drawString("Neues Spiel", 130, start_position+counter*distance-10); counter++;
-		g.drawString("Einstellungen", 130, start_position+counter*distance-10); counter++;
-		g.drawString("Beenden", 130, start_position+counter*distance-10); counter++;
+		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN,20), true));
+		g.drawString("Neues Spiel - N", 130, start_position+counter*distance-10); counter++;
+		g.drawString("Einstellungen - E", 130, start_position+counter*distance-10); counter++;
+		g.drawString("Beenden - ESC", 130, start_position+counter*distance-10); counter++;
 		
 	}
 

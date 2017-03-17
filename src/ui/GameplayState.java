@@ -13,6 +13,7 @@ import model.factory.PathTileFactory;
 import model.factory.TowerFactory;
 import model.factory.TowerTileFactory;
 import model.factory.WaveFactory;
+import model.path.Path;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -74,12 +75,15 @@ public class GameplayState extends BasicGameState {
 		pause_Game.addComponent(pauseEvent);
 		entityManager.addEntity(this.stateID, pause_Game);
 
-		PathTileFactory m = new PathTileFactory("path");
+		Path path = new Path("path");
+		entityManager.addEntity(this.stateID, path);
+		
+		PathTileFactory m = new PathTileFactory(path);
 		while (m.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, m.createEntity());
 		}
 
-		TowerTileFactory t = new TowerTileFactory(m.getMapArray());
+		TowerTileFactory t = new TowerTileFactory(path);
 		while (t.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, t.createEntity());
 		}
@@ -159,7 +163,7 @@ public class GameplayState extends BasicGameState {
 		entityManager.addEntity(this.stateID, gameLost);
 
 		Entity gameWon = new Entity("gamewon");
-		Event lastWave = new TimeEvent(147000, false);
+		Event lastWave = new TimeEvent(150000, false);
 		lastWave.addAction(new Action() {
 			@Override
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
@@ -183,7 +187,7 @@ public class GameplayState extends BasicGameState {
 				+ ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 200, 0);
 		System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
 		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
-			if(!entity.getID().contains("ile") && !entity.getID().contains("game")) System.out.println(entity.toString());
+			System.out.println(entity.getID());
 			if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
 				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 13), true));
 				g.setColor(Color.white);

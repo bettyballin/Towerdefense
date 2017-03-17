@@ -26,7 +26,7 @@ public class MoveRightEvent extends Event {
 	protected boolean performAction(GameContainer gc, StateBasedGame sb, int delta) {
 		List<Entity> it = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
 		for (Entity e : it) {
-			if(e.getID() == "startTile" || e.getID() == "tile" || e.getID() == "endTile"){
+			if(e.getID().startsWith("pathTile")){
 				if((((PathTile) e).getDirection1()=="right" && ((PathTile) e).IsInFirstTilePart(enemy.getPosition())) ||
 						((PathTile) e).getDirection2()=="right" && ((PathTile) e).IsInSecondTilePart(enemy.getPosition())){
 					return true;
