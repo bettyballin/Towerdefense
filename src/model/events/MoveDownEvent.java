@@ -27,7 +27,6 @@ public class MoveDownEvent extends Event{
 		List<Entity> it = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
 		for(Entity e : it){
 			if(e.getID().startsWith("pathTile")){
-				System.out.println("moveDown");
 				if((((PathTile) e).getDirection1()=="down" && ((PathTile) e).IsInFirstTilePart(enemy.getPosition())) ||
 						((PathTile) e).getDirection2()=="down" && ((PathTile) e).IsInSecondTilePart(enemy.getPosition())){
 					return true;

@@ -1,6 +1,6 @@
 package tests.students.suites;
 
-import tests.students.testcases.TowerTest;
+import tests.students.testcases.EntityTest;
 import tests.students.testcases.PathTest;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
@@ -12,7 +12,7 @@ public class TowerdefenseTestsuiteExtended2 {
 		
 		TestSuite suite = new TestSuite("Student tests for Towerdefense - Extended 2");
 		suite.addTest(new JUnit4TestAdapter(PathTest.class));
-		suite.addTest(new JUnit4TestAdapter(TowerTest.class));
+		suite.addTest(new JUnit4TestAdapter(EntityTest.class));
 		return suite;
 	}
 	

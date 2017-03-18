@@ -11,7 +11,7 @@ public class Life extends Entity implements ILife {
 
 	public Life(String entityID) {
 		super(entityID);
-		if (Options.getInstance().getDifficulty() == "LEICHT") {
+		if (Options.getInstance().getDifficulty() == "EINFACH") {
 			this.lifeLeft = Towerdefense.lifeEinfach;
 		}
 		if (Options.getInstance().getDifficulty() == "NORMAL") {

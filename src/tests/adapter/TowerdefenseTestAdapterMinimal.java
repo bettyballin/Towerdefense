@@ -9,14 +9,22 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import ui.Towerdefense;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.test.TestAppGameContainer;
+import model.entities.Enemy;
+import model.entities.Life;
 import model.entities.PathTile;
+import model.entities.Shoot;
 import model.entities.Tower;
+import model.entities.TowerTile;
+import model.factory.EnemyFactory;
+import model.factory.ShootFactory;
+import model.factory.TowerFactory;
 import model.factory.TowerTileFactory;
 import model.path.Path;
 
@@ -409,12 +417,10 @@ public class TowerdefenseTestAdapterMinimal {
 			return false;
 		path.createTowerTileArray();
 		for (Entity entity : entities) {
-			System.out.println(entity.getID());
 			if (entity.getID().startsWith("towerTile")) {
 				towerTiles.add(entity);
 			}
 		}
-		System.out.println(towerTiles.size());
 		int twos = 0;
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
@@ -422,13 +428,307 @@ public class TowerdefenseTestAdapterMinimal {
 					twos++;
 			}
 		}
-		path.printArray();
-		System.out.println(twos);
 		return towerTiles.size() == twos;
+	}
+	/*
+	 * ***************************************************
+	 * ********************** Tower **********************
+	 * ***************************************************
+	 */
+
+	/*
+	 * @return true if there is a towerTile entity for each 2 in pathTile array,
+	 * false if not
+	 */
+	public boolean homeTowerIsOnLastTile() {
+		Tower homeTower = null;
+
+		if (Towerdefense != null) {
+			homeTower = (Tower) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE,
+					"homeTower");
+		}
+		if (homeTower == null)
+			return false;
+
+		return (homeTower.getPosition().x >= 700 && homeTower.getPosition().x <= 800 && homeTower.getPosition().y >= 500
+				&& homeTower.getPosition().y <= 600);
 	}
 
 	/*
+	 * @return true if a tower spawns after clicking on a towertile, false if
+	 * not
+	 */
+	public boolean towerSpawnsAfterClickingOnTowerTile() {
+		List<Entity> entities = new ArrayList<Entity>();
+		TowerTile towerTile = null;
+		if (Towerdefense != null) {
+			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		}
+		if (entities.size() == 0)
+			return false;
+
+		int tower = 0;
+		for (Entity e : entities) {
+			if (e.getID().endsWith("Tower")) {
+				tower++;
+			}
+			if (e.getID().startsWith("towerTile")) {
+				towerTile = (TowerTile) e;
+			}
+		}
+		if (towerTile == null)
+			return false;
+
+		handleMouseOverEntity(towerTile);
+		int tower2 = 0;
+		app.getTestInput().setMouseButtonPressed(0);
+		handleKeyPressed(0, Input.MOUSE_LEFT_BUTTON);
+		for (Entity e : entities) {
+			if (e.getID().endsWith("Tower")) {
+				tower2++;
+			}
+		}
+		return tower + 1 == tower2;
+	}
+
+	/*
+	 * @return true if there is a towerTile entity for each 2 in pathTile array,
+	 * false if not
+	 */
+	public boolean towerSpawnsAfterNotClickingOnTowerTile() {
+		List<Entity> entities = new ArrayList<Entity>();
+		Entity notTowerTile = null;
+		if (Towerdefense != null) {
+			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		}
+		if (entities.size() == 0)
+			return false;
+
+		int tower = 0;
+		for (Entity e : entities) {
+			if (e.getID().endsWith("Tower")) {
+				tower++;
+			}
+			if (e.getID().startsWith("pathTile")) {
+				notTowerTile = e;
+			}
+		}
+		if (notTowerTile == null)
+			return false;
+
+		handleMouseOverEntity(notTowerTile);
+		int tower2 = 0;
+		app.getTestInput().setMouseButtonPressed(0);
+		handleKeyPressed(0, Input.MOUSE_LEFT_BUTTON);
+		for (Entity e : entities) {
+			if (e.getID().endsWith("Tower")) {
+				tower2++;
+			}
+		}
+		return tower + 1 == tower2;
+	}
+	
+	/*
+	 * @return true if tower detects enemy, false if not
+	 */
+	public boolean towerShootsEnemy() {
+		List<Entity> entities = new ArrayList<Entity>();
+		EnemyFactory enemyFactory = new EnemyFactory("spider");
+		Enemy enemy = (Enemy) enemyFactory.createEntity();
+		if (enemy == null)
+			return false;
+		if (Towerdefense != null) {
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		} else
+			return false;
+		if (entities.size() == 0)
+			return false;
+
+		Tower tower = null;
+		List<PathTile> pathTiles = new ArrayList<PathTile>();
+		for (Entity e : entities) {
+			if (tower == null && e.getID().startsWith("towerTile")) {
+				TowerFactory towerFactory = new TowerFactory("bulletTower", e.getPosition());
+				tower = (Tower) towerFactory.createEntity();
+				StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
+			}
+			if (e.getID().startsWith("pathTile")) {
+				pathTiles.add((PathTile) e);
+			}
+		}
+		if (tower == null || pathTiles.size() == 0)
+			return false;
+		
+		Vector2f nearTower = null;
+		for(PathTile tile : pathTiles){
+			if (tower.getPosition().x >= tile.getPosition().x - 100
+					&& tower.getPosition().x <= tile.getPosition().x + 100
+					&& tower.getPosition().y >= tile.getPosition().y - 100
+					&& tower.getPosition().y <= tile.getPosition().y + 100) {
+				nearTower = tower.getPosition();
+				break;
+			}
+		}
+		if(nearTower == null) return false;
+		enemy.setPosition(nearTower);
+		int time = 100000;
+		while(StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "shoot") == null && time > 0){
+			runGame(100);
+			time--;
+		}
+		return time > 0;
+	}
+
+	/*
+	 * 
+	 * 
+	 * /* ***************************************************
+	 * ********************** Enemy **********************
 	 * ***************************************************
+	 */
+
+	/*
+	 * @return true if there is an enemy entity after calling enemyFactory false
+	 * if not
+	 */
+	public boolean enemyDoesSpawn() {
+		EnemyFactory factory = new EnemyFactory("spider");
+		return factory.createEntity() != null;
+	}
+
+	/*
+	 * @return true if there is an enemy entity after calling enemyFactory false
+	 * if not
+	 */
+	public boolean enemyDoesMove() {
+		EnemyFactory factory = new EnemyFactory("spider");
+		Enemy enemy = (Enemy) factory.createEntity();
+		if (enemy == null)
+			return false;
+		if (Towerdefense != null) {
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+		}
+		float x = enemy.getPosition().x;
+		float y = enemy.getPosition().y;
+		runGame(1);
+		return (x != enemy.getPosition().x || y != enemy.getPosition().y);
+	}
+
+	/*
+	 * @return true if enemy moves on path false if not
+	 */
+	public boolean enemyMovesOnPath() {
+		EnemyFactory factory = new EnemyFactory("spider");
+		List<Entity> entities = new ArrayList<Entity>();
+		Enemy enemy = (Enemy) factory.createEntity();
+		if (enemy == null)
+			return false;
+		if (Towerdefense != null) {
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		}
+		if (entities.size() == 0)
+			return false;
+		List<PathTile> pathTiles = new ArrayList<PathTile>();
+		for (Entity e : entities) {
+			if (e.getID().startsWith("pathTile"))
+				pathTiles.add((PathTile) e);
+		}
+		if (pathTiles.size() == 0)
+			return false;
+
+		int time = 100;
+		boolean isOnPath = false;
+
+		// run game for 2.8 seconds
+		while (time <= 700) {
+			runGame(time);
+			isOnPath = false;
+			for (PathTile tile : pathTiles) {
+				if (enemy.getPosition().x >= tile.getPosition().x - 51
+						&& enemy.getPosition().x <= tile.getPosition().x + 51
+						&& enemy.getPosition().y >= tile.getPosition().y - 51
+						&& enemy.getPosition().y <= tile.getPosition().y + 51) {
+					isOnPath = true;
+				}
+			}
+			if (!isOnPath)
+				return false;
+			time += 100;
+		}
+		return isOnPath;
+	}
+
+
+	/*
+	 * @return true if there is a life entity false if not
+	 */
+	public boolean enemyDiesAfterBeingShot() {
+		List<Entity> entities = new ArrayList<Entity>();
+		EnemyFactory factory = new EnemyFactory("spider");
+		Enemy spider = (Enemy) factory.createEntity();
+		spider.setPosition(new Vector2f(10,50));
+		if (Towerdefense != null) {
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
+			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		} else
+			return false;
+		TowerFactory towerFactory = new TowerFactory("bulletTower", new Vector2f(100,100));
+		Tower tower = (Tower) towerFactory.createEntity();
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
+		ShootFactory shootFactory = new ShootFactory(tower, 0);
+		Shoot shoot = (Shoot) shootFactory.createEntity();
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, shoot);
+
+		int entitySize = entities.size();
+		shoot.setPosition(spider.getPosition());
+		runGame(100);
+		return (entitySize -1 == entities.size());
+	}
+	/*
+	 * 
+	 * 
+	 * /* ***************************************************
+	 * ********************** Life **********************
+	 * ***************************************************
+	 */
+
+	/*
+	 * @return true if there is a life entity false if not
+	 */
+	public boolean gameHasLife() {
+		Life life = null;
+		if (Towerdefense != null) {
+			life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
+		}
+		return life != null;
+	}
+
+	/*
+	 * @return true if there is a life entity false if not
+	 */
+	public boolean gameLosesLifeAfterEnemyThroughHomeTower() {
+		Life life = null;
+		EnemyFactory factory = new EnemyFactory("spider");
+		Enemy spider = (Enemy) factory.createEntity();
+		if (Towerdefense != null) {
+			life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
+		} else
+			return false;
+		runGame(1);
+		int lifeCount = life.getLife();
+		Vector2f outOfDisplay = new Vector2f(801, 600);
+		spider.setPosition(outOfDisplay);
+		runGame(1);
+		return lifeCount - 1 == life.getLife();
+	}
+
+	/*
+	 * 
+	 * 
+	 * /* ***************************************************
 	 * ********************** Input **********************
 	 * ***************************************************
 	 */
@@ -476,5 +776,12 @@ public class TowerdefenseTestAdapterMinimal {
 	 */
 	public void handleKeyPressESC() {
 		handleKeyPressed(0, Input.KEY_ESCAPE);
+	}
+
+	public void handleMouseOverEntity(Entity e) {
+		Float x = e.getPosition().x;
+		Float y = e.getPosition().y;
+		app.getTestInput().setMouseX(x.intValue());
+		app.getTestInput().setMouseY(y.intValue());
 	}
 }

@@ -19,16 +19,22 @@ public class Enemy extends Entity implements ILife, ISpeed {
 		this.isBlue = false;
 		int[] stats = { 0, 0, 0 };
 		if (entityID == "spider") {
-			/*if (Options.getInstance().getDifficulty() == "NORMAL") {
+			if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.spiderEnemyNormal;
 			} else if (Options.getInstance().getDifficulty() == "SCHWER") {
 				stats = Towerdefense.spiderEnemySchwer;
 			} else {
 				stats = Towerdefense.spiderEnemyEinfach;
-			}*/
-			stats = Towerdefense.spiderEnemy;
-		} else
-			stats = Towerdefense.wespEnemy;
+			}
+		} else{
+			if (Options.getInstance().getDifficulty() == "NORMAL") {
+				stats = Towerdefense.waspEnemyNormal;
+			} else if (Options.getInstance().getDifficulty() == "SCHWER") {
+				stats = Towerdefense.waspEnemySchwer;
+			} else {
+				stats = Towerdefense.waspEnemyEinfach;
+			}
+		}
 		this.life = stats[0];
 		this.maxLife = stats[0];
 		this.speed = stats[1];
@@ -40,7 +46,6 @@ public class Enemy extends Entity implements ILife, ISpeed {
 
 	public void setLife(int life) {
 		this.life = life;
-		// this.maxLife = life;
 	}
 
 	public void setSpeed(float speed) {

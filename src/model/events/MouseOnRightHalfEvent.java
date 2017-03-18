@@ -15,12 +15,12 @@ public class MouseOnRightHalfEvent extends MouseClickedEvent {
 		float x = gc.getInput().getMouseX();
 		float y = gc.getInput().getMouseY();
 		boolean build = true;
-		if(TowerTile.class.isInstance(e)){
-			if(((TowerTile) e).hasTower()){
+		if (TowerTile.class.isInstance(e)) {
+			if (((TowerTile) e).hasTower()) {
 				build = false;
 			}
 		}
-		return (build && (x >= e.getPosition().x && x <= e.getPosition().x + 30)
+		return (build && (x > e.getPosition().x && x <= e.getPosition().x + 50)
 				&& (y >= e.getPosition().y - 50 && y <= e.getPosition().y + 50));
 	}
 

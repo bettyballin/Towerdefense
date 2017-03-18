@@ -1,6 +1,7 @@
 package model.events;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 import model.entities.TowerTile;
 import eea.engine.entity.Entity;
@@ -14,12 +15,12 @@ public class MouseOnLeftHalfEvent extends MouseClickedEvent {
 		float x = gc.getInput().getMouseX();
 		float y = gc.getInput().getMouseY();
 		boolean build = true;
-		if(TowerTile.class.isInstance(e)){
-			if(((TowerTile) e).hasTower()){
+		if (TowerTile.class.isInstance(e)) {
+			if (((TowerTile) e).hasTower()) {
 				build = false;
 			}
 		}
-		return(build && x >= e.getPosition().x - 30 && x <= e.getPosition().x && y >= e.getPosition().y - 50
+		return (build && x >= e.getPosition().x - 50 && x <= e.getPosition().x && y >= e.getPosition().y - 50
 				&& y <= e.getPosition().y + 50);
 	}
 }
