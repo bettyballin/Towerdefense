@@ -28,6 +28,7 @@ public class MakeTowerSelectionVisibleAction implements Action {
 		TowerTile tile = (TowerTile) event.getOwnerEntity();
 		tile.removeComponent("ImageRenderComponent");
 		tile.addComponent(img);
+		tile.setButtonVisibility(true);
 		tile.setVisible(true);
 	}
 }

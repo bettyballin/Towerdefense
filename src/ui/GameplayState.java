@@ -185,7 +185,7 @@ public class GameplayState extends BasicGameState {
 				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getCurrentTimer() / 1000 + " Wave "
 				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getWaveCount() + "/20" + " Life left: "
 				+ ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 200, 0);
-		System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
+		//System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
 		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
 			System.out.println(entity.getID());
 			if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {

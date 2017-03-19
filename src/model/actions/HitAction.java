@@ -31,7 +31,7 @@ public class HitAction implements Action {
 
 			// remove shot
 			StateBasedEntityManager.getInstance().removeEntity(state, event.getOwnerEntity());
-
+			
 			// lower life of enemy
 			enemy.changeLife(-tower.getStrength());
 			if (tower.getID() == "iceTower" && enemy.getSpeed() > 0) {

@@ -8,14 +8,14 @@ import model.interfaces.Tile;
 public class TowerTile extends Entity implements Tile{
 
 	private Vector2f position;
-	private boolean isVisible;
+	private boolean buttonsVisible;
 	private boolean hasTower;
 	private Tower tower;
 	
 	public TowerTile(String entityID){
 		super(entityID);
 		this.position = new Vector2f(0,0);
-		this.isVisible = false;
+		this.buttonsVisible = false;
 		this.hasTower = false;
 		this.tower = null;
 	}
@@ -29,11 +29,11 @@ public class TowerTile extends Entity implements Tile{
 	public Vector2f getPosition() {
 		return position;
 	}
-	public boolean getVisibility(){
-		return isVisible;
+	public boolean getButtonVisibility(){
+		return buttonsVisible;
 	}
-	public void setVisibility(boolean visible){
-		this.isVisible = visible;
+	public void setButtonVisibility(boolean visible){
+		this.buttonsVisible = visible;
 	}
 
 	public void setHasTower(boolean hasTower) {

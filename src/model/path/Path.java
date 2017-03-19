@@ -25,6 +25,7 @@ public class Path extends Entity{
 			}
 		}
 		createPath();
+		
 	}
 	
 	public List<PathTile> getPathTiles() {

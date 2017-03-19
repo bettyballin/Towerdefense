@@ -61,7 +61,6 @@ public class EnemyFactory implements IEntityFactory {
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 				((Life)StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life")).changeLife(-1);
 			}
-			
 		});
 		enemy.addComponent(decreaseLife);
 		

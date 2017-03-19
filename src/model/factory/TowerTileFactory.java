@@ -48,7 +48,7 @@ public class TowerTileFactory implements IEntityFactory {
 		overTile.addAction(new MakeTowerSelectionVisibleAction());
 		towerdot.addComponent(overTile);
 
-		Event notOverTile = new NOTEvent(overTile);
+		Event notOverTile = new NOTEvent(new MouseEnteredEvent());
 		notOverTile.addAction(new MakeTowerSelectionUnvisibleAction());
 		towerdot.addComponent(notOverTile);
 		

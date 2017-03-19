@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import tests.adapter.TowerdefenseTestAdapterMinimal;
 
-public class EntityTest {
+public class EntityTestMinimal {
 
 	TowerdefenseTestAdapterMinimal adapter;
 
@@ -37,7 +37,7 @@ public class EntityTest {
 	public void testEnemy() {
 		adapter.initializeGame();
 		adapter.handleKeyPressN();
-		assertTrue("Spider enemy does not appear after creating the entity with an enemy factory", adapter.enemyDoesSpawn());
+		assertTrue("Enemy does not appear after creating the entity with an enemy factory", adapter.enemyDoesSpawn());
 		assertTrue("Enemy does not move", adapter.enemyDoesMove());
 		assertTrue("Enemy does not move on path", adapter.enemyMovesOnPath());
 		assertTrue("Enemy does not disappear after being shot", adapter.enemyDiesAfterBeingShot());
