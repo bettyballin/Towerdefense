@@ -28,10 +28,10 @@ public class SpawnEnemyAction implements Action {
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
-		if (nextEnemy < waveSize) {
+		if (nextEnemy < waveSize) { // wenn der Enemycounter kleiner ist als die uebergebene Wavesize
 			EnemyFactory factory = new EnemyFactory(enemyType);
-			Enemy enemy = (Enemy) factory.createEntity();
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+			Enemy enemy = (Enemy) factory.createEntity(); // erstelle ein neues Enemy
+			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);// uebergebe das Enemy dem Statebasedentitymanager
 			nextEnemy++;
 		} else if (nextEnemy == waveSize && event.getOwnerEntity().getID() == "wave")
 			StateBasedEntityManager.getInstance().removeEntity(Towerdefense.GAMEPLAYSTATE, event.getOwnerEntity());

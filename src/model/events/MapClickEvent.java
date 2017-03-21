@@ -26,9 +26,11 @@ public class MapClickEvent extends MouseClickedEvent {
 
 	@Override
 	protected boolean performAction(GameContainer gc, StateBasedGame sb, int delta) {
+		//speichern der Position des Mausklicks
 		position = new Vector2f(gc.getInput().getMouseX(), gc.getInput().getMouseY());
 		boolean isValidPosition = false;
 		Entity e = getOwnerEntity();
+	
 		if (isValidTowerTilePosition((TowerTile) e)) {
 			isValidPosition = true;
 		}

@@ -3,7 +3,6 @@ package model.entities;
 import eea.engine.entity.Entity;
 import model.interfaces.ILife;
 import model.interfaces.ISpeed;
-import model.interfaces.IStrength;
 import model.options.Options;
 import ui.Towerdefense;
 
@@ -18,6 +17,8 @@ public class Enemy extends Entity implements ILife, ISpeed {
 		super(entityID);
 		this.isBlue = false;
 		int[] stats = { 0, 0, 0 };
+		/* wenn das Enemy eine Spinne ist, setze je nach Schwierigkeitsstufe stats mit den 
+		 initialisierten Arrays aus Towerdefense */
 		if (entityID == "spider") {
 			if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.spiderEnemyNormal;
@@ -26,6 +27,7 @@ public class Enemy extends Entity implements ILife, ISpeed {
 			} else {
 				stats = Towerdefense.spiderEnemyEinfach;
 			}
+			// ansonsten handelt es sich um eine Wespe
 		} else{
 			if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.waspEnemyNormal;

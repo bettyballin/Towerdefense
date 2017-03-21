@@ -65,16 +65,18 @@ public class MainMenuState extends BasicGameState {
 		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 		
-		
+		//ueber Taste N in den Gameplaystate, neues Spiel starten
 		Entity keyListener = new Entity("keyListener");
 		Event keyN = new KeyPressedEvent(Input.KEY_N);
 		keyN.addAction(new ChangeStateInitAction(Towerdefense.GAMEPLAYSTATE));
     	keyListener.addComponent(keyN);
     	
+    	//ueber Taste E in den Optionstate
     	Event keyE = new KeyPressedEvent(Input.KEY_E);
     	keyE.addAction(new ChangeStateInitAction(Towerdefense.OPTIONSTATE));
     	keyListener.addComponent(keyE);
     	
+    	//ueber Taste ESC beenden
     	Event keyESC = new KeyPressedEvent(Input.KEY_ESCAPE);
     	keyESC.addAction(new QuitAction());
     	keyListener.addComponent(keyESC);

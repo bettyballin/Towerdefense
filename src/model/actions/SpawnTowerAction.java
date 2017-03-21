@@ -35,14 +35,18 @@ public class SpawnTowerAction implements Action {
 		if (!alreadyUsed) {
 			Money money = (Money) StateBasedEntityManager.getInstance().getEntity(sb.getCurrentStateID(), "money");
 			int amount = 0;
+			//hole Kosten des Towers je nach Towertyp
 			if (towerType == "bulletTower")
 				amount = Towerdefense.bulletTower[0];
 			else
 				amount = Towerdefense.iceTower[0];
+			// wenn die Geldmenge hoeher ist als die Kosten des Towers
 			if (money.getAmount() >= amount) {
-				money.changeAmount(-amount);
+				money.changeAmount(-amount); // ziehe den Kostenbetrag vom Geld ab
+				// erstelle einen neuen Tower entsprechend des Towertypen und fuege ihn dem StatebasedEntityManager hinzu
 				Tower tower = (Tower) new TowerFactory(towerType, position).createEntity();
 				StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
+				// aktualisieren des Towertiles, wo der Tower gebaut wurde
 				if (TowerTile.class.isInstance(e)) {
 					((TowerTile) e).setHasTower(true);
 					((TowerTile) e).setTower(tower);
