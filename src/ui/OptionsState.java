@@ -25,91 +25,95 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 
 public class OptionsState extends BasicGameState {
 
-    private int stateID;
-    private StateBasedEntityManager entityManager;
-    private Options options;
+	private int stateID;
+	private StateBasedEntityManager entityManager;
+	private Options options;
 
-    private final int distance = 100;
-    private final int start_position = 200;
+	private final int distance = 100;
+	private final int start_position = 200;
 
-    OptionsState( int stateID ) {
-       this.stateID = stateID;
-       this.entityManager = StateBasedEntityManager.getInstance();
-       this.options = Options.getInstance();
-    }
+	OptionsState(int stateID) {
+		this.stateID = stateID;
+		this.entityManager = StateBasedEntityManager.getInstance();
+		this.options = Options.getInstance();
+	}
 
 	@Override
-	public void init(GameContainer container, StateBasedGame game)
-			throws SlickException {
-
-		//if(!Towerdefense.debug)
+	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		setBackground();
+		onEscapePressed();
 
-    	onEscapePressed();
+		// Lege eine MenuEntryFactory an
+		MenuEntryFactory m;
+		int counter = 0;
 
-    	// Lege eine MenuEntryFactory an
-    	MenuEntryFactory m;
-    	int counter = 0;
-
-    	// Ton einschalten/ausschalten
-    	Action toggle_sound = new Action() {
-    		@Override
-			public void update(GameContainer gc, StateBasedGame sb, int delta,
-					Component event) {
-    			// Toggle sound
-				if(options.isSoundEnabled()) {
+		// Ton einschalten/ausschalten
+		Action toggle_sound = new Action() {
+			@Override
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				// Toggle sound
+				if (options.isSoundEnabled()) {
 					options.disableSound();
-				}
-				else {
+				} else {
 					options.enableSound();
 				}
 			}
-    	};
+		};
 
-		m = new MenuEntryFactory("Ton", container, toggle_sound, start_position+distance*counter,false);
+		m = new MenuEntryFactory("Ton", container, toggle_sound, start_position + distance * counter, false);
 		entityManager.addEntity(this.stateID, m.createEntity());
 
-		//if(!Towerdefense.debug) {
 		Entity sound_pic = new Entity("Sound_picture");
-		if(options.isSoundEnabled())
+		if (options.isSoundEnabled())
 			sound_pic.addComponent(new ImageRenderComponent(new Image("/assets/sound_enabled.png")));
 		else
 			sound_pic.addComponent(new ImageRenderComponent(new Image("/assets/sound_disabled.png")));
-		sound_pic.setPosition(new Vector2f(75, start_position+distance*counter));
+		sound_pic.setPosition(new Vector2f(75, start_position + distance * counter));
 		entityManager.addEntity(this.stateID, sound_pic);
 
 		counter++;
-		//}
-
+		
 		// Schwierigkeit einstellen
 
 		Action difficulty = new Action() {
 			@Override
-			public void update(GameContainer gc, StateBasedGame sb, int delta,
-					Component event) {
-				if(options.getDifficulty().equals("EINFACH")) {
+			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+				if (options.getDifficulty().equals("EINFACH")) {
 					options.setDifficulty(Difficulty.NORMAL);
-				} else if(options.getDifficulty().equals("NORMAL")) {
+				} else if (options.getDifficulty().equals("NORMAL")) {
 					options.setDifficulty(Difficulty.SCHWER);
 				} else {
 					options.setDifficulty(Difficulty.EINFACH);
 				}
 			}
 		};
-		m = new MenuEntryFactory("Schwierigkeit", container, difficulty, start_position+distance*counter,true);
+		m = new MenuEntryFactory("Schwierigkeit", container, difficulty, start_position + distance * counter, true);
 		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 		Action back = new ChangeStateAction(Towerdefense.MAINMENUSTATE);
-		m = new MenuEntryFactory("Zur�ck", container, back, start_position+distance*counter+30,true);
+		m = new MenuEntryFactory("Zurueck", container, back, start_position + distance * counter + 30, true);
 		entityManager.addEntity(this.stateID, m.createEntity());
 		counter++;
 
+		Event S_pressed = new KeyPressedEvent(Input.KEY_S);
+		S_pressed.addAction(toggle_sound);
+		Entity soundlistener = new Entity("soundlistener");
+		soundlistener.addComponent(S_pressed);
+		entityManager.addEntity(stateID, soundlistener);
+		
+		Event D_pressed = new KeyPressedEvent(Input.KEY_D);
+		D_pressed.addAction(difficulty);
+		Entity difficultylistener = new Entity("difficultylistener");
+		difficultylistener.addComponent(D_pressed);
+		entityManager.addEntity(stateID, difficultylistener);
 	}
 
 	private void setBackground() throws SlickException {
 		// Hintergrund laden
-		Entity background = new Entity("background");	// Entitaet fuer Hintergrund
-		background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
+		Entity background = new Entity("background"); // Entitaet fuer
+														// Hintergrund
+		background.setPosition(new Vector2f(400, 300)); // Startposition des
+														// Hintergrunds
 		background.addComponent(new ImageRenderComponent(new Image("/assets/background.png"))); // Bildkomponente
 
 		// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
@@ -134,34 +138,35 @@ public class OptionsState extends BasicGameState {
 	}
 
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g)
-			throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 
-		entityManager.renderEntities(container,game, g);
+		entityManager.renderEntities(container, game, g);
 
 		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 32), true));
-		g.drawString("Einstellungen", 70, start_position-100);
+		g.drawString("Einstellungen", 70, start_position - 100);
 		g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 16), true));
 
-		if(Options.getInstance().isSoundEnabled()) {
+		if (Options.getInstance().isSoundEnabled()) {
 			entityManager.getEntity(this.stateID, "Sound_picture").removeComponent("SoundPic");
-			//if(!Towerdefense.debug)
-			entityManager.getEntity(this.stateID, "Sound_picture").addComponent(new ImageRenderComponent(new Image("/assets/sound_enabled.png")));
-			g.drawString("Ton ausschalten", 120, entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y-10);
+			entityManager.getEntity(this.stateID, "Sound_picture")
+					.addComponent(new ImageRenderComponent(new Image("/assets/sound_enabled.png")));
+			g.drawString("Ton ausschalten - S", 120,
+					entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y - 10);
 		} else {
 			entityManager.getEntity(this.stateID, "Sound_picture").removeComponent("SoundPic");
-			//if(!Towerdefense.debug)
-			entityManager.getEntity(this.stateID, "Sound_picture").addComponent(new ImageRenderComponent(new Image("/assets/sound_disabled.png")));
-			g.drawString("Ton einschalten", 120, entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y-10);
+			entityManager.getEntity(this.stateID, "Sound_picture")
+					.addComponent(new ImageRenderComponent(new Image("/assets/sound_disabled.png")));
+			g.drawString("Ton einschalten - S", 120,
+					entityManager.getEntity(this.stateID, "Sound_picture").getPosition().y - 10);
 		}
 
-		g.drawString(options.getDifficulty(), 120, entityManager.getEntity(this.stateID, "Schwierigkeit").getPosition().y-10);
-		g.drawString("Zur�ck", 120, entityManager.getEntity(this.stateID, "Zur�ck").getPosition().y-10);
+		g.drawString(options.getDifficulty() + " - D", 120,
+				entityManager.getEntity(this.stateID, "Schwierigkeit").getPosition().y - 10);
+		g.drawString("Zurueck - ESC", 120, entityManager.getEntity(this.stateID, "Zurueck").getPosition().y - 10);
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta)
-			throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		entityManager.updateEntities(container, game, delta);
 	}
 
@@ -169,6 +174,5 @@ public class OptionsState extends BasicGameState {
 	public int getID() {
 		return stateID;
 	}
-
 
 }

@@ -1,10 +1,5 @@
 package ui;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -21,13 +16,11 @@ import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
-import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.Event;
 import eea.engine.event.basicevents.KeyPressedEvent;
-import eea.engine.event.basicevents.MouseEnteredEvent;
 
 public class MainMenuState extends BasicGameState {
 
@@ -54,7 +47,7 @@ public class MainMenuState extends BasicGameState {
 		int counter = 0;
 		
 		// Neues Spiel starten
-		Action new_game = new ChangeStateInitAction(Towerdefense.GAMEPLAYSTATE);
+		Action new_game = new ChangeStateAction(Towerdefense.GAMEPLAYSTATE);
 		m = new MenuEntryFactory("Neues Spiel starten", container, new_game, start_position+distance*counter,true);
 		Entity startGame = m.createEntity();
 		entityManager.addEntity(this.stateID, startGame);

@@ -1,7 +1,6 @@
 package ui;
 
 import model.entities.Enemy;
-import model.entities.Explosion;
 import model.entities.Life;
 import model.entities.Money;
 import model.entities.Timer;
@@ -187,7 +186,7 @@ public class GameplayState extends BasicGameState {
 				+ ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 200, 0);
 		//System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
 		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
-			System.out.println(entity.getID());
+			//System.out.println(entity.getID());
 			if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
 				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 13), true));
 				g.setColor(Color.white);

@@ -75,7 +75,7 @@ public class TowerFactory implements IEntityFactory {
 		try {
 			tower.addComponent(new ImageRenderComponent(new Image("assets/" + towerType + ".png")));
 		} catch (SlickException e) {
-			System.out.println("assets/" + towerType + ".png not found in TowerFactory.java");
+			System.err.println("assets/" + towerType + ".png not found in TowerFactory.java");
 		}
 
 		Float speed = tower.getSpeed();

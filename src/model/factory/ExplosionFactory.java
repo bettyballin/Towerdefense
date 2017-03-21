@@ -17,11 +17,11 @@ public class ExplosionFactory implements IEntityFactory {
 	private final Tower tower;
 	private final float posX;
 	private final float posY;
-	private final int width;
-	private final int height;
+	private final float width;
+	private final float height;
 	private Image[] image;
 
-	public ExplosionFactory(Tower tower, float posX, float posY, int width, int height) {
+	public ExplosionFactory(Tower tower, float posX, float posY, float width, float height) {
 		this.tower = tower;
 		this.posX = posX;
 		this.posY = posY;
@@ -40,15 +40,14 @@ public class ExplosionFactory implements IEntityFactory {
 					new Image("assets/" + img + "13.png"), new Image("assets/" + img + "14.png"),
 					new Image("assets/" + img + "15.png"), new Image("assets/" + img + "16.png") };
 		} catch (SlickException e) {
-			System.out.println("assets/expl...png or ice...png not found in ExplosionFactory");
+			System.err.println("assets/expl...png or ice...png not found in ExplosionFactory");
 		}
 	}
 
 	@Override
 	public Entity createEntity() {
 		Entity explosion = new Explosion("explosion", width, height, 0.005f);
-		explosion.setPosition(new Vector2f(posX - 50, posY - 50));
-
+		explosion.setPosition(new Vector2f(posX-50, posY-50));
 		AnimationRenderComponent anim = new AnimationRenderComponent(image, 0.01f, width, height, false);
 		explosion.addComponent(anim);
 

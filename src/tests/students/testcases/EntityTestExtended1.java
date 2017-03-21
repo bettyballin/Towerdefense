@@ -1,4 +1,4 @@
-package tests.tutors.testcases;
+package tests.students.testcases;
 
 import static org.junit.Assert.*;
 
@@ -37,14 +37,12 @@ public class EntityTestExtended1 {
 		assertTrue("Enemy does not move on path", adapter.enemyMovesInCenterOfPath());
 		assertTrue("Enemy does not have a life attribute", adapter.enemyHasLife());
 		assertTrue("Explosion entity does not exist", adapter.explosionEntityExists());
-		assertTrue("Explosion entity exists, but has no image", adapter.explosionHasImage());
 	}
 	
 	@Test
 	public void testMoney() {
 		adapter.initializeGame();
 		adapter.handleKeyPressN();
-		assertTrue("Money entity does not exist", adapter.moneyEntityExists());
 		assertTrue("Money does not increase after enemy dies", adapter.moneyIncreasesAfterEnemyDies());
 		assertTrue("Money does not decrease after building a tower", adapter.moneyDecreasesAfterBuildingTower());
 	}

@@ -42,9 +42,12 @@ public class MainMenuTest {
 		// run game for 1 ms
 		adapter.runGame(1);
 		assertTrue(
-				"The game is not in GAMEPLAYSTATE after running for 1 ms, current state id = "
+				"The game is not in GAMEPLAYSTATE after running for 1 ms in GAMEPLAYSTATE, current state id = "
 						+ adapter.getStateBasedGame().getCurrentStateID(),
 				adapter.getStateBasedGame().getCurrentStateID() == Towerdefense.GAMEPLAYSTATE);
+
+		assertTrue("Background entity does not exist", adapter.backgroundExists());
+		assertTrue("Background entity is not visible", adapter.backgroundIsVisible());
 		
 		// end game and return to MAINMENUSTATE
 		adapter.handleKeyPressESC();

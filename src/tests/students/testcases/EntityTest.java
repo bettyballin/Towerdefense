@@ -28,8 +28,6 @@ public class EntityTest {
 		adapter.handleKeyPressN();
 		assertTrue("Home tower is not on the last path tile", adapter.homeTowerIsOnLastTile());
 		assertTrue("Tower does not spawn after clicking on tower tile", adapter.towerSpawnsAfterClickingOnTowerTile());
-		assertFalse("Tower spawns after clicking on something else than a towerTile",
-				adapter.towerSpawnsAfterNotClickingOnTowerTile());
 	}
 
 }

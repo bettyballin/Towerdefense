@@ -35,7 +35,7 @@ public class EnemyFactory implements IEntityFactory {
 		try {
 			img = new Image("assets/"+type+".png");
 		} catch (SlickException e) {
-			System.out.println("/assets/"+type+".png not found in EnemyFactory.java");
+			System.err.println("/assets/"+type+".png not found in EnemyFactory.java");
 		}
 	}
 

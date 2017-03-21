@@ -22,7 +22,7 @@ public class BackgroundFactory implements IEntityFactory {
 		try {
 			background.addComponent(new ImageRenderComponent(new Image("/assets/background.png")));
 		} catch (SlickException e) {
-			System.out.println("/assets/background.png not found in BackgroundFactory.java");
+			System.err.println("/assets/background.png not found in BackgroundFactory.java");
 		}
 		return background;
 	}

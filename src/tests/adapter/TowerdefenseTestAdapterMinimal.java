@@ -77,9 +77,7 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/*
-	 * *************************************************** ********* initialize,
-	 * run, stop the game **********
-	 * ***************************************************
+	 * ********* initialize, run, stop the game **********
 	 */
 
 	public StateBasedGame getStateBasedGame() {
@@ -87,10 +85,9 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/**
-	 * Diese Methode initialisiert das Spiel im Debug-Modus, d.h. es wird ein
-	 * AppGameContainer gestartet, der keine Fenster erzeugt und aktualisiert.
+	 * Diese Methode initialisiert das Spiel im Test-Modus.
 	 * 
-	 * Sie muessen diese Methode erweitern
+	 * Sie muessen diese Methode erweitern.
 	 */
 	public void initializeGame() {
 
@@ -121,7 +118,7 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/**
-	 * Stoppe das im Hintergrund laufende Spiel
+	 * Stop the game which is running in background
 	 */
 	public void stopGame() {
 		if (app != null) {
@@ -133,8 +130,7 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/**
-	 * Run the game for a specified duration. Laesst das Spiel fuer eine
-	 * angegebene Zeit laufen
+	 * Run the game for a specified duration
 	 * 
 	 * @param ms
 	 *            duration of runtime of the game
@@ -150,143 +146,175 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/**
-	 * @return true if Background is shown, else false
+	 * @return true if background exists, else false
 	 */
-	public boolean backgroundVisible() {
+	public boolean backgroundExists() {
 
-		if (Towerdefense == null)
+		if (Towerdefense == null) {
 			System.err.println("The game Towerdefense has not been initialized, Towerdefense is null!");
-
-		List<Entity> entities = new ArrayList<Entity>();
-
-		if (Towerdefense != null)
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-
-		boolean backgroundVisible = false;
-
-		for (Entity entity : entities) {
-			if (entity.toString().contains("Background")) {
-				backgroundVisible = true;
-			}
+			return false;
 		}
 
-		return backgroundVisible;
+		// get list of each entity in the game
+		List<Entity> entities = new ArrayList<Entity>();
+		entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		if (entities.size() == 0) {
+			System.err.println("The game Towerdefense does not have any entities!");
+			return false;
+		}
+
+		// get background entity
+		for (Entity entity : entities) {
+			if (entity.getID().contains("background")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if background is shown, else false
+	 */
+	public boolean backgroundIsVisible() {
+
+		// get list of each entity in the game
+		List<Entity> entities = new ArrayList<Entity>();
+		entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		if (entities.size() == 0) {
+			System.err.println("The game Towerdefense does not have any entities!");
+			return false;
+		}
+
+		// get background entity
+		for (Entity entity : entities) {
+			if (entity.getID().contains("background")) {
+				if (entity.getSize().x == 0 || entity.getSize().y == 0)
+					return false;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/*
-	 * *************************************************** ******************
-	 * Tupel Path ********************
+	 * *************************************************** ********************
+	 * Path *************************
 	 * ***************************************************
 	 */
+
+	/**
+	 * @return true if path entity exists, false if not
+	 */
+	public boolean pathExists() {
+		if (Towerdefense == null) {
+			System.err.println("The game Towerdefense has not been initialized, Towerdefense is null!");
+			return false;
+		}
+		Entity path = null;
+		// try to get path entity from StateBasedEntityManager
+		try {
+			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
+		} catch (Exception e) {
+			System.err.println("The path entity does not exist!");
+			return false;
+		}
+		if (path == null) {
+			System.err.println("The path entity has not been initialized, path is null!");
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * @return true if path array is of size 6x8, false if not
 	 */
 	public boolean pathArrayIs6x8() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
+		Entity path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
+		int[][] pathArray = null;
+		// try to get path array from Path
+		try {
+			pathArray = ((Path) path).getPathArray();
+		} catch (Exception e) {
+			System.err.println("Path array cannot be accessed by the method getPathArray()!");
 			return false;
-
-		int[][] pathlist = path.getPathArray();
-
-		if (pathlist == null)
+		}
+		if (pathArray == null) {
+			System.err.println("The path array has not been initialized, path array is null!");
 			return false;
-		else
-			return (pathlist.length == 6 && pathlist[0].length == 8);
+		}
+		return (pathArray.length == 6 && pathArray[0].length == 8);
 	}
 
 	/**
-	 * @return true if path array starts at position 0.0, false if not
+	 * @return true if path array starts at the top left corner, false if not
 	 */
 	public boolean pathArrayStartsAtX0Y0() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
-
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 		int[][] pathlist = path.getPathArray();
-
-		if (pathlist == null)
-			return false;
-		else
-			return (pathlist[0][0] == 1);
+		return (pathlist[0][0] == 1);
 	}
 
 	/**
-	 * @return true if path array ends at position 7.5, false if not
+	 * @return true if path array ends at the bottom right corner, false if not
 	 */
 	public boolean pathArrayEndsAtX7Y5() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
-
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 		int[][] pathlist = path.getPathArray();
-
-		if (pathlist == null)
-			return false;
-		else
-			return (pathlist[5][7] == 1);
+		return (pathlist[5][7] == 1);
 	}
 
 	/**
-	 * @return true if path array does contain a connected path of 1's, false if
-	 *         not
+	 * @return true if path array contains a connected path of 1s, false if not
 	 */
 	public boolean pathArrayContainsPath() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
-
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 		int[][] pathlist = path.getPathArray();
 
-		if (pathlist == null)
-			return false;
-		else {
-			boolean hasPath = true;
-			for (int column = 0; column < 5; column++) {
-				for (int row = 0; row < 7; row++) {
-					if (pathlist[column][row] == 1) {
-						if (pathlist[column + 1][row] != 1 && pathlist[column][row + 1] != 1) {
-							hasPath = false;
-						}
+		boolean hasPath = false;
+		// go through each entry of the path array and check if path is
+		// connected
+		for (int column = 0; column < 5; column++) {
+			for (int row = 0; row < 7; row++) {
+				// if current position is occupied by a pathTile
+				if (pathlist[column][row] == 1) {
+					hasPath = false;
+					// look at neighbors to determine if there is a path
+					if (pathlist[column + 1][row] == 1 || pathlist[column][row + 1] == 1) {
+						hasPath = true;
 					}
 				}
+				if (!hasPath)
+					return false;
 			}
-			return hasPath;
 		}
+		return hasPath;
 	}
 
 	/**
 	 * @return true if there is a pathTile entity for each 1 in pathTile array
 	 */
 	public boolean pathArrayContainsRightAmountOfPathTiles() {
+		// get list of each entity in the game
 		List<Entity> entities = new ArrayList<Entity>();
-		Path path = null;
-		if (Towerdefense != null) {
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		}
-		if (path == null)
+		entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		if (entities.size() == 0) {
+			System.err.println("The game Towerdefense does not have any entities!");
 			return false;
+		}
 
-		List<Entity> pathTiles = new ArrayList<Entity>();
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 
+		// get the path array
 		int[][] pathlist = path.getPathArray();
 
-		if (pathlist == null)
-			return false;
+		// get each path tile entity that is currently in the game
+		List<Entity> pathTiles = new ArrayList<Entity>();
 		for (Entity entity : entities) {
 			if (entity.getID().startsWith("pathTile")) {
 				pathTiles.add(entity);
 			}
 		}
+		// go through each entry of the path array and count the 1s
 		int ones = 0;
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
@@ -300,127 +328,167 @@ public class TowerdefenseTestAdapterMinimal {
 	/**
 	 * @return true if path array does contain the right elements, false if not
 	 */
-	public boolean pathArrayContainsOnly0and1() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
-
+	public boolean pathArrayContainsRightEntries() {
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 		int[][] pathlist = path.getPathArray();
 
-		if (pathlist == null)
-			return false;
-		else {
-			boolean rightEntry = true;
-			for (int column = 0; column < 6; column++) {
-				for (int row = 0; row < 8; row++) {
-					if (pathlist[column][row] < 0 || pathlist[column][row] > 2)
-						rightEntry = false;
-				}
+		// go through each entry of the path array and check if the path has
+		// only
+		// 0s, 1s or 2s
+		boolean rightEntry = false;
+		for (int column = 0; column < 6; column++) {
+			for (int row = 0; row < 8; row++) {
+				rightEntry = false;
+				if (pathlist[column][row] >= 0 && pathlist[column][row] <= 2)
+					rightEntry = true;
+				if (!rightEntry)
+					return false;
 			}
-			return rightEntry;
 		}
+		return rightEntry;
 	}
 
 	/**
-	 * @return true if path array does contain the right elements, false if not
+	 * @return true if path tiles have the same position as in the path array,
+	 *         false if not
 	 */
-	public boolean towerTileArrayContainsOnly012() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
+	public boolean pathArrayCorrespondsToPathTilePositions() {
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
 
-		int[][] pathlist = path.getPathArray();
+		// get the path array
+		int[][] pathArray = path.getPathArray();
 
-		if (pathlist == null)
-			return false;
-		else {
-			path.createTowerTileArray();
-			pathlist = path.getPathArray();
-			boolean rightEntry = true;
-			for (int column = 0; column < 6; column++) {
-				for (int row = 0; row < 8; row++) {
-					if (pathlist[column][row] < 0 || pathlist[column][row] > 2)
-						rightEntry = false;
+		// get each path tile entity that is currently in the game
+		List<PathTile> pathTiles = new ArrayList<PathTile>();
+		for (Entity entity : entities) {
+			if (entity.getID().startsWith("pathTile")) {
+				pathTiles.add((PathTile) entity);
+			}
+		}
+		// go through each entry of the path array
+		boolean rightEntry = false;
+		for (int column = 0; column < 6; column++) {
+			for (int row = 0; row < 8; row++) {
+				// if there is a 1 at the certain position
+				if (pathArray[column][row] == 1) {
+					rightEntry = false;
+					// look for pathTile that has the same position
+					for (PathTile tile : pathTiles) {
+						if (tile.getPosition().x == row * 100 + 50 && tile.getPosition().y == column * 100 + 50) {
+							rightEntry = true;
+							break;
+						}
+					}
+					if (!rightEntry)
+						return false;
 				}
 			}
-			return rightEntry;
 		}
+		return rightEntry;
+	}
+
+	/**
+	 * @return true if path tiles have the same position as in the path array,
+	 *         false if not
+	 */
+	public boolean pathArrayCorrespondsToTowerTilePositions() {
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+
+		try {
+			path.createTowerTileArray();
+		} catch (Exception e) {
+			System.err.println("The method createTowerTileArray() does not exist in Path");
+			return false;
+		}
+		// get the path array
+		int[][] pathArray = path.getPathArray();
+		// get each path tile entity that is currently in the game
+		List<TowerTile> towerTiles = new ArrayList<TowerTile>();
+		for (Entity entity : entities) {
+			if (entity.getID().startsWith("towerTile")) {
+				towerTiles.add((TowerTile) entity);
+			}
+		}
+		// go through each entry of the path array
+		boolean rightEntry = false;
+		for (int column = 0; column < 6; column++) {
+			for (int row = 0; row < 8; row++) {
+				// if there is a 2 at the certain position
+				if (pathArray[column][row] == 2) {
+					rightEntry = false;
+					// look for towerTile that has the same position
+					for (TowerTile tile : towerTiles) {
+						if (tile.getPosition().x == row * 100 + 50 && tile.getPosition().y == column * 100 + 50) {
+							rightEntry = true;
+							break;
+						}
+					}
+					if (!rightEntry)
+						return false;
+				}
+			}
+		}
+		return rightEntry;
 	}
 
 	/**
 	 * @return true if path array does contain the right elements, false if not
 	 */
 	public boolean towerTilesAreNextToPath() {
-		Path path = null;
-		if (Towerdefense != null)
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		if (path == null)
-			return false;
-
-		int[][] pathlist = path.getPathArray();
-
-		if (pathlist == null)
-			return false;
-		else {
-			path.createTowerTileArray();
-			pathlist = path.getPathArray();
-			if (pathlist == null || pathlist.length == 0)
-				return false;
-			for (int column = 0; column < 6; column++) {
-				for (int row = 0; row < 8; row++) {
-					if (row < 7) {
-						if (pathlist[column][row + 1] == 1 && pathlist[column][row] == 1) {
-							if (column > 0 && row < 7)
-								if (pathlist[column - 1][row + 1] != 2)
-									return false;
-							if (column < 5)
-								if (pathlist[column + 1][row] != 2)
-									return false;
-						}
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
+		path.createTowerTileArray();
+		int[][] pathArray = path.getPathArray();
+		// go through every entry of the updated pathArray
+		// and see if the 2s are placed correctly
+		boolean rightEntries = false;
+		for (int column = 0; column < 6; column++) {
+			for (int row = 0; row < 8; row++) {
+				rightEntries = true;
+				if (row < 7) {
+					if (pathArray[column][row + 1] == 1 && pathArray[column][row] == 1) {
+						if (column > 0 && row < 7)
+							if (pathArray[column - 1][row + 1] != 2)
+								return false;
+						if (column < 5)
+							if (pathArray[column + 1][row] != 2)
+								return false;
 					}
-					if (column < 5) {
-						if (pathlist[column + 1][row] == 1 && pathlist[column][row] == 1) {
-							if (row < 7)
-								pathlist[column][row + 1] = 2;
-							if (column < 5 && row > 0)
-								pathlist[column + 1][row - 1] = 2;
-						}
+				}
+				if (column < 5) {
+					if (pathArray[column + 1][row] == 1 && pathArray[column][row] == 1) {
+						if (row < 7)
+							if (pathArray[column][row + 1] != 2)
+								return false;
+						if (column < 5 && row > 0)
+							if (pathArray[column + 1][row - 1] != 2)
+								return false;
 					}
 				}
 			}
 		}
-		return true;
+		return rightEntries;
 	}
 
 	/**
-	 * @return true if there is a towerTile entity for each 2 in pathTile array,
+	 * @return true if there is a towerTile entity for each 2 in pathArray,
 	 *         false if not
 	 */
 	public boolean pathArrayContainsRightAmountOfTowerTiles() {
-		List<Entity> entities = new ArrayList<Entity>();
-		Path path = null;
-		if (Towerdefense != null) {
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-			path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
-		}
-		if (path == null)
-			return false;
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+		Path path = (Path) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "path");
 
 		List<Entity> towerTiles = new ArrayList<Entity>();
 		int[][] pathlist = path.getPathArray();
-
-		if (pathlist == null)
-			return false;
+		// add the towerTiles (2s) into the array
 		path.createTowerTileArray();
 		for (Entity entity : entities) {
 			if (entity.getID().startsWith("towerTile")) {
 				towerTiles.add(entity);
 			}
 		}
+		// count each occurence of 2 in the array
 		int twos = 0;
 		for (int column = 0; column < 6; column++) {
 			for (int row = 0; row < 8; row++) {
@@ -430,7 +498,7 @@ public class TowerdefenseTestAdapterMinimal {
 		}
 		return towerTiles.size() == twos;
 	}
-	
+
 	/*
 	 * ***************************************************
 	 * ********************** Tower **********************
@@ -438,25 +506,29 @@ public class TowerdefenseTestAdapterMinimal {
 	 */
 
 	/*
-	 * @return true if there is a towerTile entity for each 2 in pathTile array,
-	 * false if not
+	 * @return true if hometower is on the last pathtile, false if not
 	 */
 	public boolean homeTowerIsOnLastTile() {
-		Tower homeTower = null;
-
-		if (Towerdefense != null) {
+		Entity homeTower = null;
+		try {
 			homeTower = (Tower) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE,
 					"homeTower");
-		}
-		if (homeTower == null)
+		} catch (Exception e) {
+			System.err.println("homeTower class does not exist");
 			return false;
+		}
 
+		if (homeTower == null) {
+			System.err.println("homeTower entity does not exist in the StatebasedEntityManager");
+			return false;
+		}
+		// check if homeTower is located somewhere on the last pathTile
 		return (homeTower.getPosition().x >= 700 && homeTower.getPosition().x <= 800 && homeTower.getPosition().y >= 500
 				&& homeTower.getPosition().y <= 600);
 	}
 
 	/*
-	 * @return true if a tower spawns after clicking on a towertile, false if
+	 * @return true if a tower spawns after clicking on a towerTile, false if
 	 * not
 	 */
 	public boolean towerSpawnsAfterClickingOnTowerTile() {
@@ -464,26 +536,36 @@ public class TowerdefenseTestAdapterMinimal {
 		TowerTile towerTile = null;
 		if (Towerdefense != null) {
 			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		}
-		if (entities.size() == 0)
+		} else {
+			System.err.println("The game Towerdefense has not been initialized, Towerdefense is null!");
 			return false;
-
+		}
+		if (entities.size() == 0) {
+			System.err.println("There are no entities in the StateBasedEntityManager!");
+			return false;
+		}
 		int tower = 0;
 		for (Entity e : entities) {
+			// get amount of tower already in game
 			if (e.getID().endsWith("Tower")) {
 				tower++;
 			}
+			// get a random tower tile for testing
 			if (e.getID().startsWith("towerTile")) {
 				towerTile = (TowerTile) e;
 			}
 		}
-		if (towerTile == null)
+		if (towerTile == null) {
+			System.err.println("There are no towerTile entities in the StateBasedEntityManager!");
 			return false;
-
+		}
+		// put mouse over towerTile and click
 		handleMouseOverEntity(towerTile);
-		int tower2 = 0;
 		app.getTestInput().setMouseButtonPressed(0);
 		handleKeyPressed(0, Input.MOUSE_LEFT_BUTTON);
+		runGame(1);
+		// count occurrences of tower again
+		int tower2 = 0;
 		for (Entity e : entities) {
 			if (e.getID().endsWith("Tower")) {
 				tower2++;
@@ -493,34 +575,35 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/*
-	 * @return true if there is a towerTile entity for each 2 in pathTile array,
-	 * false if not
+	 * @return true if tower spawns after clicking on something else than a
+	 * towertile, false if not
 	 */
 	public boolean towerSpawnsAfterNotClickingOnTowerTile() {
-		List<Entity> entities = new ArrayList<Entity>();
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
 		Entity notTowerTile = null;
-		if (Towerdefense != null) {
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		}
-		if (entities.size() == 0)
-			return false;
-
 		int tower = 0;
 		for (Entity e : entities) {
+			// count the amount of towers in the game
 			if (e.getID().endsWith("Tower")) {
 				tower++;
 			}
+			// test if tower spawns if we are over a pathtile
 			if (e.getID().startsWith("pathTile")) {
 				notTowerTile = e;
 			}
 		}
-		if (notTowerTile == null)
+		if (notTowerTile == null) {
+			System.err.println("There are no pathTile entities in the game");
 			return false;
+		}
 
+		// click on pathTile
 		handleMouseOverEntity(notTowerTile);
-		int tower2 = 0;
 		app.getTestInput().setMouseButtonPressed(0);
 		handleKeyPressed(0, Input.MOUSE_LEFT_BUTTON);
+
+		// return false if amount of towers in game increases
+		int tower2 = 0;
 		for (Entity e : entities) {
 			if (e.getID().endsWith("Tower")) {
 				tower2++;
@@ -528,27 +611,26 @@ public class TowerdefenseTestAdapterMinimal {
 		}
 		return tower + 1 == tower2;
 	}
-	
+
 	/*
 	 * @return true if tower detects enemy, false if not
 	 */
-	public boolean towerShootsEnemy() {
-		List<Entity> entities = new ArrayList<Entity>();
+	public boolean towerShootsOnEnemy() {
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+
+		// create new spider enemy entity
 		EnemyFactory enemyFactory = new EnemyFactory("spider");
-		Enemy enemy = (Enemy) enemyFactory.createEntity();
-		if (enemy == null)
+		Entity enemy = enemyFactory.createEntity();
+		if (enemy == null) {
+			System.err.println("EnemyFactory does not create an enemy");
 			return false;
-		if (Towerdefense != null) {
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		} else
-			return false;
-		if (entities.size() == 0)
-			return false;
+		}
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
 
 		Tower tower = null;
 		List<PathTile> pathTiles = new ArrayList<PathTile>();
 		for (Entity e : entities) {
+			// build one tower on first towerTile in entity list
 			if (tower == null && e.getID().startsWith("towerTile")) {
 				TowerFactory towerFactory = new TowerFactory("bulletTower", e.getPosition());
 				tower = (Tower) towerFactory.createEntity();
@@ -558,11 +640,14 @@ public class TowerdefenseTestAdapterMinimal {
 				pathTiles.add((PathTile) e);
 			}
 		}
-		if (tower == null || pathTiles.size() == 0)
+		if (tower == null) {
+			System.err.println("There was a problem with creating a tower with a TowerFactory");
 			return false;
-		
+		}
+
 		Vector2f nearTower = null;
-		for(PathTile tile : pathTiles){
+		// find a pathTile which is near the tower
+		for (PathTile tile : pathTiles) {
 			if (tower.getPosition().x >= tile.getPosition().x - 100
 					&& tower.getPosition().x <= tile.getPosition().x + 100
 					&& tower.getPosition().y >= tile.getPosition().y - 100
@@ -571,10 +656,16 @@ public class TowerdefenseTestAdapterMinimal {
 				break;
 			}
 		}
-		if(nearTower == null) return false;
+		if (nearTower == null) {
+			System.err.println("There is no pathTile found in the near of a certain towerTile");
+			return false;
+		}
+		// put enemy in the range of the tower
 		enemy.setPosition(nearTower);
 		int time = 100000;
-		while(StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "shoot") == null && time > 0){
+		// try to run the game until tower shoots
+		while (StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "shoot") == null
+				&& time > 0) {
 			runGame(100);
 			time--;
 		}
@@ -590,8 +681,8 @@ public class TowerdefenseTestAdapterMinimal {
 	 */
 
 	/*
-	 * @return true if there is an enemy entity after calling enemyFactory false
-	 * if not
+	 * @return true if there is an enemy entity after calling enemyFactory,
+	 * false if not
 	 */
 	public boolean enemyDoesSpawn() {
 		EnemyFactory factory = new EnemyFactory("spider");
@@ -599,45 +690,37 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/*
-	 * @return true if there is an enemy entity after calling enemyFactory false
-	 * if not
+	 * @return true if the enemy moves while running the game, false if not
 	 */
 	public boolean enemyDoesMove() {
 		EnemyFactory factory = new EnemyFactory("spider");
 		Enemy enemy = (Enemy) factory.createEntity();
-		if (enemy == null)
-			return false;
-		if (Towerdefense != null) {
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
-		}
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+
 		float x = enemy.getPosition().x;
 		float y = enemy.getPosition().y;
 		runGame(1);
+
+		// check if position is not the same after running the game for 1 ms
 		return (x != enemy.getPosition().x || y != enemy.getPosition().y);
 	}
 
 	/*
-	 * @return true if enemy moves on path false if not
+	 * @return true if enemy moves on path, false if not
 	 */
 	public boolean enemyMovesOnPath() {
+		// create spider enemy and add it to StateBasedEntityManager
 		EnemyFactory factory = new EnemyFactory("spider");
-		List<Entity> entities = new ArrayList<Entity>();
 		Enemy enemy = (Enemy) factory.createEntity();
-		if (enemy == null)
-			return false;
-		if (Towerdefense != null) {
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		}
-		if (entities.size() == 0)
-			return false;
+
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, enemy);
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+
 		List<PathTile> pathTiles = new ArrayList<PathTile>();
 		for (Entity e : entities) {
 			if (e.getID().startsWith("pathTile"))
 				pathTiles.add((PathTile) e);
 		}
-		if (pathTiles.size() == 0)
-			return false;
 
 		int time = 100;
 		boolean isOnPath = false;
@@ -646,6 +729,7 @@ public class TowerdefenseTestAdapterMinimal {
 		while (time <= 700) {
 			runGame(time);
 			isOnPath = false;
+			// check if enemy moves on the path or on the border of it
 			for (PathTile tile : pathTiles) {
 				if (enemy.getPosition().x >= tile.getPosition().x - 51
 						&& enemy.getPosition().x <= tile.getPosition().x + 51
@@ -661,32 +745,36 @@ public class TowerdefenseTestAdapterMinimal {
 		return isOnPath;
 	}
 
-
 	/*
-	 * @return true if there is a life entity false if not
+	 * @return true if enemy dies after being hit by a shot, false if not
 	 */
 	public boolean enemyDiesAfterBeingShot() {
-		List<Entity> entities = new ArrayList<Entity>();
 		EnemyFactory factory = new EnemyFactory("spider");
 		Enemy spider = (Enemy) factory.createEntity();
-		spider.setPosition(new Vector2f(10,50));
-		if (Towerdefense != null) {
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
-			entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		} else
-			return false;
-		TowerFactory towerFactory = new TowerFactory("bulletTower", new Vector2f(100,100));
+
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
+		List<Entity> entities = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
+
+		// create tower for shoot
+		TowerFactory towerFactory = new TowerFactory("bulletTower", new Vector2f(100, 100));
 		Tower tower = (Tower) towerFactory.createEntity();
 		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
+
+		// create shoot for shooting enemy, using the previously created tower
+		// and setting shoot rotation to 0
 		ShootFactory shootFactory = new ShootFactory(tower, 0);
 		Shoot shoot = (Shoot) shootFactory.createEntity();
 		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, shoot);
 
 		int entitySize = entities.size();
+		// set position of shoot to position of spider to cause a collision
 		shoot.setPosition(spider.getPosition());
 		runGame(100);
-		return (entitySize -1 == entities.size());
+
+		// check if we lost one entity - the enemy entity created before
+		return (entitySize - 1 == entities.size());
 	}
+
 	/*
 	 * 
 	 * 
@@ -696,55 +784,52 @@ public class TowerdefenseTestAdapterMinimal {
 	 */
 
 	/*
-	 * @return true if there is a life entity false if not
+	 * @return true if there is a life entity, false if not
 	 */
 	public boolean gameHasLife() {
-		Life life = null;
-		if (Towerdefense != null) {
-			life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
+		try {
+			Life life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
+			return true;
+		} catch (Exception e) {
+			System.err.println("The game does not have a class called Life");
+			return false;
 		}
-		return life != null;
 	}
 
 	/*
 	 * @return true if there is a life entity false if not
 	 */
 	public boolean gameLosesLifeAfterEnemyThroughHomeTower() {
-		Life life = null;
+		Life life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
+
 		EnemyFactory factory = new EnemyFactory("spider");
 		Enemy spider = (Enemy) factory.createEntity();
-		if (Towerdefense != null) {
-			life = (Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life");
-			StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
-		} else
-			return false;
+
+		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, spider);
+
 		runGame(1);
 		int lifeCount = life.getLife();
+		// set enemy position to the edge of the display (simulating that the
+		// enemy went through the hometower and reached the end of the path)
 		Vector2f outOfDisplay = new Vector2f(801, 600);
 		spider.setPosition(outOfDisplay);
+
 		runGame(1);
+
+		// check if life has decreased by 1
 		return lifeCount - 1 == life.getLife();
 	}
 
 	/*
-	 * 
-	 * 
-	 * /* ***************************************************
+	 * ***************************************************
 	 * ********************** Input **********************
 	 * ***************************************************
 	 */
 
-	/**
-	 * This Method should emulate the key pressed event. This should make the
-	 * playertank shoot.
+	/*
+	 * @param updatetime: time until updateGame is called
 	 * 
-	 * Diese Methode emuliert das Druecken beliebiger Tasten. (Dies soll es
-	 * ermoeglichen, das Schiessen des Spielerpanzers zu testen)
-	 * 
-	 * @param updatetime
-	 *            : Zeitdauer bis update-Aufruf
-	 * @param input
-	 *            : z.B. Input.KEY_K, Input.KEY_L
+	 * @param input: z.B. Input.KEY_K, Input.KEY_L
 	 */
 	public void handleKeyPressed(int updatetime, Integer input) {
 		if (Towerdefense != null && app != null) {
@@ -758,27 +843,28 @@ public class TowerdefenseTestAdapterMinimal {
 	}
 
 	/**
-	 * This Method should emulate the pressing of the n key. This should pause
+	 * This method should emulate the pressing of the n key. This should start
 	 * the game.
 	 * 
-	 * Diese Methode emuliert das Druecken der 'n'-Taste. (Dies soll es
-	 * ermoeglichen, das Spiel zu pausieren)
 	 */
 	public void handleKeyPressN() {
 		handleKeyPressed(0, Input.KEY_N);
 	}
 
 	/**
-	 * This Method should emulate the pressing of the esc key. This should end
+	 * This method should emulate the pressing of the esc key. This should end
 	 * the game and change into the main menu.
-	 * 
-	 * Diese Methode emuliert das Druecken der 'esc'-Taste. (Dies soll es
-	 * ermoeglichen, das Spiel zu beenden und ins Hauptmenue zu wechseln)
 	 */
 	public void handleKeyPressESC() {
 		handleKeyPressed(0, Input.KEY_ESCAPE);
 	}
 
+	/**
+	 * This method moves the mouse over a certain entity
+	 * 
+	 * @param e
+	 *            Entity to move the mouse over
+	 */
 	public void handleMouseOverEntity(Entity e) {
 		Float x = e.getPosition().x;
 		Float y = e.getPosition().y;

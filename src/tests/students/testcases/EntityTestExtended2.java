@@ -1,4 +1,4 @@
-package tests.tutors.testcases;
+package tests.students.testcases;
 
 import static org.junit.Assert.*;
 
@@ -30,16 +30,12 @@ public class EntityTestExtended2 {
 		assertTrue("Second tower type does not slow down enemies", adapter.secondTowerTypeSlowsDownEnemies());
 		assertTrue("Selection buttons do not appear while mouse over tower tile", adapter.towerSelectionButtonsAppear());
 		assertTrue("Selection buttons do not work for first tower", adapter.towerSelectionWorksForFirstTower());
-		adapter.handleKeyPressESC();
-		adapter.handleKeyPressN();
-		assertTrue("Selection buttons do not work for second tower", adapter.towerSelectionWorksForSecondTower());
 	}
 
 	@Test
 	public void testEnemy() {
 		adapter.initializeGame();
 		adapter.handleKeyPressN();
-		assertTrue("Second type of enemy does not exist", adapter.secondEnemyTypeExists());
 		assertTrue("Second type of enemy is not faster than first type", adapter.secondEnemyTypeIsFasterThanFirst());
 	}
 }

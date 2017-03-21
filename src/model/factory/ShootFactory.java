@@ -43,7 +43,7 @@ public class ShootFactory implements IEntityFactory {
 			Image image = new Image("assets/"+img+".png");
 			shoot.addComponent(new ImageRenderComponent(image));
 		} catch (SlickException e) {
-			System.out.println("/assets/"+img+".png not found in ShootFactory.java");
+			System.err.println("/assets/"+img+".png not found in ShootFactory.java");
 		}
 		
 		Event mainEvent = new LeavingScreenEvent();

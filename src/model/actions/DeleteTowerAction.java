@@ -25,6 +25,14 @@ public class DeleteTowerAction implements Action{
 		Float costs = (float) (tower.getCosts()/2);
 		m.changeAmount(costs.intValue());	
 		StateBasedEntityManager.getInstance().removeEntity(state, tower);
-		StateBasedEntityManager.getInstance().addEntity(Towerdefense.GAMEPLAYSTATE, tower);
+		
+		for(Entity e : StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE)){
+			if(e.getID().startsWith("towerTile")){
+				if(((TowerTile) e).hasTower() && ((TowerTile) e).getTower().equals(tower)){
+					((TowerTile) e).setTower(null);
+					((TowerTile) e).setHasTower(false);
+				}
+			}
+		}
 	}		
 }
