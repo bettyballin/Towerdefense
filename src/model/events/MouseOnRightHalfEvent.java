@@ -9,6 +9,9 @@ import model.entities.TowerTile;
 
 public class MouseOnRightHalfEvent extends MouseClickedEvent {
 
+	/*
+	 * returns true if mouse is on left half of a towertile
+	 */
 	@Override
 	protected boolean performAction(GameContainer gc, StateBasedGame sb, int delta) {
 		Entity e = getOwnerEntity();

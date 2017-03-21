@@ -15,6 +15,9 @@ public class MakeUpdateSelectionVisibleAction implements Action{
 
 	private ImageRenderComponent img;
 	
+	/*
+	 * make update and delete buttons visible for certain type of tower
+	 */
 	public MakeUpdateSelectionVisibleAction(String tower){
 		try {
 			img = new ImageRenderComponent( new Image("assets/"+tower+"buttons.png"));

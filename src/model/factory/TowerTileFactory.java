@@ -2,8 +2,6 @@ package model.factory;
 
 import java.util.List;
 
-
-
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
@@ -26,6 +24,12 @@ public class TowerTileFactory implements IEntityFactory {
 	private List<TowerTile> tileList;
 	private int nextTile;
 
+	/**
+	 * Constructs a towerTile factory
+	 * 
+	 * @param path
+	 *            given path in which all towertiles are saved
+	 */
 	public TowerTileFactory(Path path) {
 		path.createTowerTileArray();
 		this.tileList = path.getTowerTiles();
@@ -36,30 +40,32 @@ public class TowerTileFactory implements IEntityFactory {
 	public boolean hasEntitiesLeft() {
 		return (nextTile < tileList.size());
 	}
-	
+
 	@Override
 	public Entity createEntity() {
 		TowerTile towerdot = tileList.get(nextTile++);
-		
+
+		// if mouse is over towertile, make selection buttons visible
 		Event overTile = new ANDEvent(new MouseEnteredEvent(), new MouseNotOverTowerEvent("notovertower"));
 		overTile.addAction(new MakeTowerSelectionVisibleAction());
 		towerdot.addComponent(overTile);
 
+		// if mouse is not over towertile, make selection buttons unvisible
 		Event notOverTile = new NOTEvent(new MouseEnteredEvent());
 		notOverTile.addAction(new MakeTowerSelectionUnvisibleAction());
 		towerdot.addComponent(notOverTile);
-		
+
 		// if ButtonCLickLeftEvent is true, build a bulletTower
 		Event buttonclickleft = new ANDEvent(new MouseOnLeftHalfEvent(), new MouseClickedEvent());
 		buttonclickleft.addAction(new SpawnTowerAction("bulletTower"));
-		
-		// if MouseOnRightHalfEvent is true, build a iceTower
+
+		// if MouseOnRightHalfEvent is true, build an iceTower
 		Event buttonclickright = new ANDEvent(new MouseOnRightHalfEvent(), new MouseClickedEvent());
 		buttonclickright.addAction(new SpawnTowerAction("iceTower"));
 
 		towerdot.addComponent(buttonclickright);
 		towerdot.addComponent(buttonclickleft);
-		
+
 		return towerdot;
 	}
 

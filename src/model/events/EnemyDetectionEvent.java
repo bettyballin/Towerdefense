@@ -14,6 +14,14 @@ public class EnemyDetectionEvent extends Event {
 	Tower tower;
 	Entity collider;
 
+	/**
+	 * Constructs an enemy detection event
+	 * 
+	 * @param id
+	 * @param tower
+	 *            the tower which is currently detecting the collision with the
+	 *            enemy
+	 */
 	public EnemyDetectionEvent(String id, Tower tower) {
 		super(id);
 		this.tower = tower;
@@ -25,6 +33,7 @@ public class EnemyDetectionEvent extends Event {
 		boolean perform = false;
 		for (Entity e : StateBasedEntityManager.getInstance().getEntitiesByState(sb.getCurrentStateID())) {
 			if (Enemy.class.isInstance(e)) {
+				// if enemy is in range of the tower, return true
 				if (isInRange(e)) {
 					perform = true;
 					collider = e;

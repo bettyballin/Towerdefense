@@ -30,40 +30,51 @@ public class EnemyFactory implements IEntityFactory {
 	private final String type;
 	private Image img;
 
+	/**
+	 * Constructs an enemy factory with the given type of enemy (spider or wasp)
+	 */
 	public EnemyFactory(String type) {
 		this.type = type;
 		try {
-			img = new Image("assets/"+type+".png");
+			img = new Image("assets/" + type + ".png");
 		} catch (SlickException e) {
-			System.err.println("/assets/"+type+".png not found in EnemyFactory.java");
+			System.err.println("/assets/" + type + ".png not found in EnemyFactory.java");
 		}
 	}
 
 	@Override
 	public Entity createEntity() {
+		// create new enemy and set it to the beginning of the path
 		Enemy enemy = new Enemy(type);
 		enemy.setScale(0.5f);
-		enemy.setPosition(new Vector2f(10,50));
+		enemy.setPosition(new Vector2f(10, 50));
 		enemy.addComponent(new ImageRenderComponent(img));
-		
+
+		// enemy moves right on path if the direction of the current part of the
+		// pathtile is "right"
 		MoveRightEvent moveRightEvent = new MoveRightEvent("moveright", enemy);
 		moveRightEvent.addAction(new MoveRightAction(enemy));
 		enemy.addComponent(moveRightEvent);
 
+		// enemy moves down on path if the direction of the current part of the
+		// pathtile is "down"
 		MoveDownEvent moveDownEvent = new MoveDownEvent("movedown", enemy);
 		moveDownEvent.addAction(new MoveDownAction(enemy));
 		enemy.addComponent(moveDownEvent);
 
+		// enemy disappears after leaving the screen and decreases the life
+		// amount of life entity
 		Event decreaseLife = new LeavingScreenEvent();
 		decreaseLife.addAction(new DestroyEntityAction());
-		decreaseLife.addAction(new Action(){
+		decreaseLife.addAction(new Action() {
 			@Override
 			public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
-				((Life)StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life")).changeLife(-1);
+				((Life) StateBasedEntityManager.getInstance().getEntity(Towerdefense.GAMEPLAYSTATE, "life"))
+						.changeLife(-1);
 			}
 		});
 		enemy.addComponent(decreaseLife);
-		
+
 		return enemy;
 	}
 

@@ -11,17 +11,21 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import model.entities.Tower;
 
-public class MakeUpdateSelectionUnvisibleAction implements Action{
-	
+public class MakeUpdateSelectionUnvisibleAction implements Action {
+
 	private Image img;
-	
-	public MakeUpdateSelectionUnvisibleAction(String tower){
+
+	/*
+	 * make update and delete buttons unvisible for certain type of tower
+	 */
+	public MakeUpdateSelectionUnvisibleAction(String tower) {
 		try {
-			img = new Image("assets/"+tower+".png");
+			img = new Image("assets/" + tower + ".png");
 		} catch (SlickException en) {
-			System.out.println("/assets/"+tower+".png not found in MakeTowerSelectionVisibleAction.java");
+			System.out.println("/assets/" + tower + ".png not found in MakeTowerSelectionVisibleAction.java");
 		}
 	}
+
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 		Entity tower = event.getOwnerEntity();

@@ -15,6 +15,10 @@ public class MakeTowerSelectionVisibleAction implements Action {
 
 	private ImageRenderComponent img;
 
+	/*
+	 * make tower selection buttons visible when mouse is over a towertile which
+	 * doesn't have a tower
+	 */
 	public MakeTowerSelectionVisibleAction() {
 		try {
 			img = new ImageRenderComponent(new Image("assets/towerdot.png"));

@@ -5,24 +5,34 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 import model.entities.Explosion;
-import model.entities.Shoot;
 import model.entities.Tower;
-import eea.engine.component.RenderComponent;
 import eea.engine.component.render.AnimationRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.IEntityFactory;
 
 public class ExplosionFactory implements IEntityFactory {
 
-	private final Tower tower;
 	private final float posX;
 	private final float posY;
 	private final float width;
 	private final float height;
 	private Image[] image;
 
+	/**
+	 * Constructs an explosion factory
+	 * 
+	 * @param tower
+	 *            for creating a red or a blue explosion
+	 * @param posX
+	 *            x position of explosion
+	 * @param posY
+	 *            y position of explosion
+	 * @param width
+	 *            width of explosion
+	 * @param height
+	 *            height of explosion
+	 */
 	public ExplosionFactory(Tower tower, float posX, float posY, float width, float height) {
-		this.tower = tower;
 		this.posX = posX;
 		this.posY = posY;
 		this.width = width;
@@ -46,8 +56,9 @@ public class ExplosionFactory implements IEntityFactory {
 
 	@Override
 	public Entity createEntity() {
+		// create explosion with given parameters and construct an animation
 		Entity explosion = new Explosion("explosion", width, height, 0.005f);
-		explosion.setPosition(new Vector2f(posX-50, posY-50));
+		explosion.setPosition(new Vector2f(posX - 50, posY - 50));
 		AnimationRenderComponent anim = new AnimationRenderComponent(image, 0.01f, width, height, false);
 		explosion.addComponent(anim);
 

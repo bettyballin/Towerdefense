@@ -12,20 +12,27 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.basicevents.CollisionEvent;
 
 public class ChangeLifeAction implements Action {
-	
+
 	private int strength;
-	
-	public ChangeLifeAction(int strength){
+
+	/**
+	 * Constructor of ChangeLifeAction.
+	 * 
+	 * @param strength
+	 *            strength of tower which shot hits enemy, enemy's life has to
+	 *            decrease by this strength
+	 * 
+	 */
+	public ChangeLifeAction(int strength) {
 		this.strength = strength;
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sb, int delta,
-			Component event) {
-		if(CollisionEvent.class.isInstance(event)){
+	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
+		if (CollisionEvent.class.isInstance(event)) {
 			CollisionEvent colider = (CollisionEvent) event;
 			Entity entity = colider.getCollidedEntity();
-			if(ILife.class.isInstance(entity)){
+			if (ILife.class.isInstance(entity)) {
 				ILife life = (ILife) entity;
 				life.changeLife(strength);
 				StateBasedEntityManager.getInstance().removeEntity(sb.getCurrentStateID(), colider.getOwnerEntity());

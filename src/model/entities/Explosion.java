@@ -8,8 +8,11 @@ public class Explosion extends Entity implements ISpeed {
 	private float width;
 	private float height;
 	private float speed;
-	
-	public Explosion(String id, float width , float height, float speed) {
+
+	/**
+	 * Constructs an explosion with a given width, height and animation speed
+	 */
+	public Explosion(String id, float width, float height, float speed) {
 		super(id);
 		this.width = width;
 		this.height = height;
@@ -19,11 +22,11 @@ public class Explosion extends Entity implements ISpeed {
 	public float getWidth() {
 		return this.width;
 	}
-	
+
 	public float getHeight() {
 		return this.height;
 	}
-	
+
 	@Override
 	public void setSpeed(float speed) {
 		this.speed = speed;

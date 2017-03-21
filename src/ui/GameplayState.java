@@ -51,15 +51,19 @@ public class GameplayState extends BasicGameState {
 
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
+
+		// create the background image
 		BackgroundFactory b = new BackgroundFactory();
 		entityManager.addEntity(this.stateID, b.createEntity());
 
+		// create an "ESC"-click-listener to change into main menu
 		Entity quit_Game = new Entity("quitgame");
 		Event keyEvent = new KeyPressedEvent(Input.KEY_ESCAPE);
 		keyEvent.addAction(new ChangeStateInitAction(Towerdefense.MAINMENUSTATE));
 		quit_Game.addComponent(keyEvent);
 		entityManager.addEntity(stateID, quit_Game);
 
+		// create a "P"-click-listener to pause the game
 		Entity pause_Game = new Entity("pausegame");
 		Event pauseEvent = new KeyPressedEvent(Input.KEY_P);
 		pauseEvent.addAction(new Action() {
@@ -74,22 +78,25 @@ public class GameplayState extends BasicGameState {
 		pause_Game.addComponent(pauseEvent);
 		entityManager.addEntity(this.stateID, pause_Game);
 
+		// create a new Path
 		Path path = new Path("path");
 		entityManager.addEntity(this.stateID, path);
-		
+		// .. a PathTile Factory
 		PathTileFactory m = new PathTileFactory(path);
 		while (m.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, m.createEntity());
 		}
-
+		// .. and a TowerTile Factory to get the path entities into the game
 		TowerTileFactory t = new TowerTileFactory(path);
 		while (t.hasEntitiesLeft()) {
 			entityManager.addEntity(this.stateID, t.createEntity());
 		}
 
+		// create the hometower and position it at the last pathtile
 		TowerFactory f = new TowerFactory("homeTower", new Vector2f(750, 530));
 		entityManager.addEntity(this.stateID, f.createEntity());
 
+		// create a timer which counts back
 		Timer timer = new Timer("timer");
 		TimeEvent countdown = new TimeEvent(1000, true);
 		countdown.addAction(new Action() {
@@ -101,6 +108,8 @@ public class GameplayState extends BasicGameState {
 		timer.addComponent(countdown);
 		entityManager.addEntity(this.stateID, timer);
 
+		// create a new spider wave entity which starts a wave after 7 seconds
+		// pass
 		Entity wave = new Entity("wave");
 		TimeEvent spiderWaveTimer = new TimeEvent(7000, true);
 		spiderWaveTimer.addAction(new Action() {
@@ -114,6 +123,9 @@ public class GameplayState extends BasicGameState {
 				timer.incWaveCount();
 			}
 		});
+
+		// creates a clock that adds a spider enemy to each wave after 20
+		// seconds pass
 		Event spiderWaveClock = new TimeEvent(20000, true);
 		spiderWaveClock.addAction(new Action() {
 			@Override
@@ -121,6 +133,9 @@ public class GameplayState extends BasicGameState {
 				spiderWaveSize++;
 			}
 		});
+
+		// create a new wasp wave entity which starts a wave after 7 seconds
+		// pass
 		TimeEvent waspWaveTimer = new TimeEvent(7000, true);
 		waspWaveTimer.addAction(new Action() {
 			@Override
@@ -129,6 +144,9 @@ public class GameplayState extends BasicGameState {
 				entityManager.addEntity(Towerdefense.GAMEPLAYSTATE, w.createEntity());
 			}
 		});
+
+		// creates a clock that adds a wasp enemy to each wave after 31 seconds
+		// pass
 		Event waspWaveClock = new TimeEvent(31000, true);
 		waspWaveClock.addAction(new Action() {
 			@Override
@@ -142,12 +160,16 @@ public class GameplayState extends BasicGameState {
 		wave.addComponent(waspWaveClock);
 		entityManager.addEntity(this.stateID, wave);
 
+		// create a new money entity
 		Money money = new Money("money");
 		entityManager.addEntity(this.stateID, money);
 
+		// create a new life entity
 		Life life = new Life("life");
 		entityManager.addEntity(this.stateID, life);
 
+		// create an entity that listens to the amount of life that is left and
+		// ends the game if there is no life left
 		Entity gameLost = new Entity("gamelost");
 		Event death = new LifeOverEvent("lifeover");
 		death.addAction(new Action() {
@@ -161,6 +183,8 @@ public class GameplayState extends BasicGameState {
 		gameLost.addComponent(death);
 		entityManager.addEntity(this.stateID, gameLost);
 
+		// create an entity that listens to the amount of time that has passed,
+		// end the game if 150 seconds passed (=the last wave has finished)
 		Entity gameWon = new Entity("gamewon");
 		Event lastWave = new TimeEvent(150000, false);
 		lastWave.addAction(new Action() {
@@ -178,15 +202,16 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		entityManager.renderEntities(container, game, g);
-		
+
+		// draw the game stats in the top center of the screen
 		int amount = ((Money) entityManager.getEntity(this.stateID, "money")).getAmount();
 		g.drawString("Money: " + amount + " Next wave in "
 				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getCurrentTimer() / 1000 + " Wave "
 				+ ((Timer) entityManager.getEntity(this.stateID, "timer")).getWaveCount() + "/20" + " Life left: "
 				+ ((Life) entityManager.getEntity(this.stateID, "life")).getLife(), 200, 0);
-		//System.out.println(entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE).size());
+
 		for (Entity entity : entityManager.getEntitiesByState(Towerdefense.GAMEPLAYSTATE)) {
-			//System.out.println(entity.getID());
+			// draw the costs for update and delete when these buttons are shown
 			if (Tower.class.isInstance(entity) && ((Tower) entity).getShowingButtons()) {
 				g.setFont(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.PLAIN, 13), true));
 				g.setColor(Color.white);
@@ -194,9 +219,12 @@ public class GameplayState extends BasicGameState {
 						entity.getPosition().y + 25);
 				Float costs = (float) (((Tower) entity).getCosts() / 2);
 				g.drawString("+" + costs.intValue(), entity.getPosition().x + 15, entity.getPosition().y + 25);
-			} else if (Enemy.class.isInstance(entity)) {
+			}
+			// draw the life bars over each enemy
+			else if (Enemy.class.isInstance(entity)) {
 				g.setColor(Color.black);
-				g.drawRect(entity.getPosition().x -30, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3, 5);
+				g.drawRect(entity.getPosition().x - 30, entity.getPosition().y - 30, ((Enemy) entity).getMaxLife() * 3,
+						5);
 				if (((Enemy) entity).getIceHit())
 					g.setColor(Color.blue);
 				else

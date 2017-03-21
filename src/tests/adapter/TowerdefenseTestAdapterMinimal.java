@@ -725,8 +725,8 @@ public class TowerdefenseTestAdapterMinimal {
 		int time = 100;
 		boolean isOnPath = false;
 
-		// run game for 2.8 seconds
-		while (time <= 700) {
+		// run game for 1.5 seconds
+		while (time <= 500) {
 			runGame(time);
 			isOnPath = false;
 			// check if enemy moves on the path or on the border of it

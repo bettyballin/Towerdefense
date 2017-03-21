@@ -6,7 +6,10 @@ import ui.Towerdefense;
 public class Money extends Entity{
 
 	private int amount;
-	
+
+	/**
+	 * Constructs a money entity with the given stats from Towerdefense
+	 */
 	public Money(String entityID) {
 		super(entityID);
 		this.amount = Towerdefense.startBudget;

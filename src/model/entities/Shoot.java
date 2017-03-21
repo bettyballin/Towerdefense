@@ -4,11 +4,15 @@ import model.interfaces.ISpeed;
 import model.interfaces.IStrength;
 import eea.engine.entity.Entity;
 
-public class Shoot extends Entity implements IStrength,ISpeed {
+public class Shoot extends Entity implements IStrength, ISpeed {
 
 	protected int strength;
 	protected float speed;
 
+	/**
+	 * Constructs a shoot entity with a given strength, sets shooting speed to
+	 * 70
+	 */
 	public Shoot(String id, int strength) {
 		super(id);
 		this.strength = strength;
@@ -18,7 +22,8 @@ public class Shoot extends Entity implements IStrength,ISpeed {
 	@Override
 	public void changeStrength(int value) {
 		strength += value;
-		if(strength < 0) strength = 0;
+		if (strength < 0)
+			strength = 0;
 	}
 
 	@Override

@@ -7,16 +7,14 @@ import org.newdawn.slick.geom.Vector2f;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.IEntityFactory;
-import model.entities.Background;
 
 public class BackgroundFactory implements IEntityFactory {
-	
-	public BackgroundFactory(){
-	}
-	
+
 	@Override
 	public Entity createEntity() {
-		Background background = new Background("background");
+		// create a new entity and place it in the center of the game window
+		// which has the size 800x600
+		Entity background = new Entity("background");
 		background.setPosition(new Vector2f(400, 300));
 		background.setScale(1.3f);
 		try {

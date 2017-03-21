@@ -8,13 +8,16 @@ import eea.engine.event.basicevents.MouseClickedEvent;
 
 public class MouseOnLeftHalfEvent extends MouseClickedEvent {
 
+	/*
+	 * returns true if mouse is on left half of a towertile
+	 */
 	@Override
 	protected boolean performAction(GameContainer gc, StateBasedGame sb, int delta) {
 		Entity e = getOwnerEntity();
 		float x = gc.getInput().getMouseX();
 		float y = gc.getInput().getMouseY();
 		boolean build = true;
-		
+
 		if (TowerTile.class.isInstance(e)) {
 			if (((TowerTile) e).hasTower()) {
 				build = false;

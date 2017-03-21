@@ -11,6 +11,16 @@ public class WaveFactory implements IEntityFactory {
 	private String enemyType;
 	private int timeBetweenSpawns;
 
+	/**
+	 * Constructs a wave factory
+	 * 
+	 * @param enemy
+	 *            type of enemy
+	 * @param waveSize
+	 *            amount of enemies we want to spawn
+	 * @param timeBetweenSpawns
+	 *            time between the spawns
+	 */
 	public WaveFactory(String enemy, int waveSize, int timeBetweenSpawns) {
 		this.waveSize = waveSize;
 		this.enemyType = enemy;
@@ -19,6 +29,8 @@ public class WaveFactory implements IEntityFactory {
 
 	@Override
 	public Entity createEntity() {
+		// create a new wave which spawns an enemy every time the given time
+		// between spawns is up
 		Entity wave = new Entity("wave");
 		TimeEvent waveTimer = new TimeEvent(timeBetweenSpawns, true);
 		waveTimer.addAction(new SpawnEnemyAction(enemyType, waveSize));

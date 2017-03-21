@@ -12,13 +12,18 @@ public class Enemy extends Entity implements ILife, ISpeed {
 	private final int maxLife;
 	private float speed;
 	private boolean isBlue;
-
+	
+	/**
+	 * Constructs an enemy with the stats of Towerdefense
+	 */
 	public Enemy(String entityID) {
 		super(entityID);
 		this.isBlue = false;
 		int[] stats = { 0, 0, 0 };
-		/* wenn das Enemy eine Spinne ist, setze je nach Schwierigkeitsstufe stats mit den 
-		 initialisierten Arrays aus Towerdefense */
+		/*
+		 * wenn das Enemy eine Spinne ist, setze je nach Schwierigkeitsstufe
+		 * stats mit den initialisierten Arrays aus Towerdefense
+		 */
 		if (entityID == "spider") {
 			if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.spiderEnemyNormal;
@@ -28,7 +33,7 @@ public class Enemy extends Entity implements ILife, ISpeed {
 				stats = Towerdefense.spiderEnemyEinfach;
 			}
 			// ansonsten handelt es sich um eine Wespe
-		} else{
+		} else {
 			if (Options.getInstance().getDifficulty() == "NORMAL") {
 				stats = Towerdefense.waspEnemyNormal;
 			} else if (Options.getInstance().getDifficulty() == "SCHWER") {
@@ -53,9 +58,11 @@ public class Enemy extends Entity implements ILife, ISpeed {
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+
 	public void setIceHit(boolean isBlue) {
 		this.isBlue = isBlue;
 	}
+
 	public boolean getIceHit() {
 		return isBlue;
 	}

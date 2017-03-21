@@ -12,10 +12,11 @@ public class StopWatch {
 	 private long elapsedTime;
 	 private long startTime;
 	 private boolean isRunning;
+
 	/**
-      Constructs a stopwatch that is in the stopped state
-      and has no time accumulated.
-   */
+	 * Constructs a stopwatch that is in the stopped state and has no time
+	 * accumulated.
+	 */
    public StopWatch() {  
    	reset();
    }

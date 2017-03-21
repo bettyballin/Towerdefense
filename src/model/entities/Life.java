@@ -8,7 +8,10 @@ import model.options.Options;
 public class Life extends Entity implements ILife {
 
 	private int lifeLeft;
-
+	
+	/**
+	 * Constructs a Life entity with the stats from Towerdefense
+	 */
 	public Life(String entityID) {
 		super(entityID);
 		if (Options.getInstance().getDifficulty() == "SCHWER") {

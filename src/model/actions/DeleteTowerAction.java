@@ -1,6 +1,5 @@
 package model.actions;
 
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -15,6 +14,9 @@ import ui.Towerdefense;
 
 public class DeleteTowerAction implements Action{
 	
+	/*
+	 * deletes the tower and increases money
+	 */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 		int state = Towerdefense.GAMEPLAYSTATE;

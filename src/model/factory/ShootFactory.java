@@ -19,15 +19,24 @@ import eea.engine.event.basicevents.LoopEvent;
 import eea.engine.interfaces.IEntityFactory;
 
 public class ShootFactory implements IEntityFactory {
-	
+
 	protected final float rotation;
 	protected final Vector2f position;
 	protected final Tower tower;
-	
-	public ShootFactory(Tower tower,float rotation){
+
+	/**
+	 * Constructs a shoot factory
+	 * 
+	 * @param tower
+	 *            the tower which is shooting
+	 * @param rotation
+	 *            the orientation in which the tower has to shoot to hit the
+	 *            enemy
+	 */
+	public ShootFactory(Tower tower, float rotation) {
 		this.tower = tower;
 		this.rotation = rotation;
-		this.position = new Vector2f(tower.getPosition().x,tower.getPosition().y);
+		this.position = new Vector2f(tower.getPosition().x, tower.getPosition().y);
 	}
 
 	@Override
@@ -36,28 +45,33 @@ public class ShootFactory implements IEntityFactory {
 		shoot.setPosition(position);
 		shoot.setRotation(rotation);
 		shoot.setScale(0.3f);
-		
+
+		// get image for shoot
 		String img = "shoot";
-		if(tower.getID() == "iceTower") img = "icicle";
+		if (tower.getID() == "iceTower")
+			img = "icicle";
 		try {
-			Image image = new Image("assets/"+img+".png");
+			Image image = new Image("assets/" + img + ".png");
 			shoot.addComponent(new ImageRenderComponent(image));
 		} catch (SlickException e) {
-			System.err.println("/assets/"+img+".png not found in ShootFactory.java");
+			System.err.println("/assets/" + img + ".png not found in ShootFactory.java");
 		}
-		
+
+		// destroy shoot if it leaves the display
 		Event mainEvent = new LeavingScreenEvent();
 		mainEvent.addAction(new DestroyEntityAction());
 		shoot.addComponent(mainEvent);
-		
+
+		// if the shoot collides with an enemy, call HitAction
 		mainEvent = new CollisionEvent();
 		mainEvent.addAction(new HitAction(tower));
 		shoot.addComponent(mainEvent);
-		
+
+		// let shoot entity move forward with the given speed
 		mainEvent = new LoopEvent();
 		mainEvent.addAction(new MoveForwardAction((ISpeed) shoot));
 		shoot.addComponent(mainEvent);
-		
+
 		return shoot;
 	}
 

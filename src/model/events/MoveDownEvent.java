@@ -13,10 +13,17 @@ import eea.engine.event.Event;
 import model.entities.PathTile;
 import ui.Towerdefense;
 
-public class MoveDownEvent extends Event{
+public class MoveDownEvent extends Event {
 
 	private final Enemy enemy;
 
+	/**
+	 * Constructs a move down event
+	 * 
+	 * @param id
+	 * @param enemy
+	 *            the enemy which asks if he has to move down or not
+	 */
 	public MoveDownEvent(String id, Enemy enemy) {
 		super(id);
 		this.enemy = enemy;
@@ -25,10 +32,13 @@ public class MoveDownEvent extends Event{
 	@Override
 	protected boolean performAction(GameContainer gc, StateBasedGame sb, int delta) {
 		List<Entity> it = StateBasedEntityManager.getInstance().getEntitiesByState(Towerdefense.GAMEPLAYSTATE);
-		for(Entity e : it){
-			if(e.getID().startsWith("pathTile")){
-				if((((PathTile) e).getDirection1()=="down" && ((PathTile) e).IsInFirstTilePart(enemy.getPosition())) ||
-						((PathTile) e).getDirection2()=="down" && ((PathTile) e).IsInSecondTilePart(enemy.getPosition())){
+		for (Entity e : it) {
+			if (e.getID().startsWith("pathTile")) {
+				// return true if enemy is in first part of tile and first direction of tile is down
+				// or he is in second part and second direction is down
+				if ((((PathTile) e).getDirection1() == "down" && ((PathTile) e).IsInFirstTilePart(enemy.getPosition()))
+						|| ((PathTile) e).getDirection2() == "down"
+								&& ((PathTile) e).IsInSecondTilePart(enemy.getPosition())) {
 					return true;
 				}
 			}

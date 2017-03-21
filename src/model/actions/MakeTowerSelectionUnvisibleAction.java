@@ -9,6 +9,10 @@ import model.entities.TowerTile;
 
 public class MakeTowerSelectionUnvisibleAction implements Action {
 
+	/*
+	 * make tower selection buttons unvisible when a tower is built over the
+	 * towertile
+	 */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta, Component event) {
 		TowerTile tile = (TowerTile) event.getOwnerEntity();
